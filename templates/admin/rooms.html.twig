@@ -1,0 +1,114 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Rooms Manager | Admin Panel{% endblock %}
+{% block topbar_title %}Rooms Manager{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <div class="panel-header">
+        <h2 class="panel-title">All Rooms ({{ rooms|length }})</h2>
+        <button class="admin-btn admin-btn-gold" data-modal-open="roomModal" data-add-title="Add New Room">
+            Add Room
+        </button>
+    </div>
+
+    {% if rooms is empty %}
+        <div class="admin-empty">
+            <p>No rooms added yet. Click "Add Room" to get started.</p>
+        </div>
+    {% else %}
+        <div class="admin-rooms-grid">
+            {% for room in rooms %}
+                {% set roomImage = room.imageUrl|replace({'../../assets/': '', '../assets/': '', 'assets/': ''})|trim('/') %}
+                {% set roomImageUrl = roomImage starts with 'http://' or roomImage starts with 'https://' ? roomImage : asset(roomImage starts with 'images/' ? roomImage : 'images/' ~ roomImage) %}
+                <div class="admin-room-card">
+                    <div class="admin-room-img">
+                    <img src="{{ roomImageUrl }}" alt="{{ room.name }}" loading="lazy">
+                    </div>
+                    <div class="admin-room-body">
+                        <h4>{{ room.name }}</h4>
+                        <p class="admin-room-specs">{{ room.specs }}</p>
+                        <p class="admin-room-price">₱{{ room.price|number_format(0, '.', ',') }} <span>/ night</span></p>
+                        <div class="admin-room-actions">
+                            <button class="admin-btn admin-btn-sm admin-btn-blue"
+                                data-modal-open="roomModal"
+                                data-edit-id="{{ room.id }}"
+                                data-edit-title="Edit Room"
+                                data-field-name="{{ room.name }}"
+                                data-field-badge="{{ room.badge }}"
+                                data-field-badge_class="{{ room.badgeClass }}"
+                                data-field-specs="{{ room.specs }}"
+                                data-field-price="{{ room.price }}"
+                                data-field-description="{{ room.description|default('') }}"
+                                data-field-image_url="{{ room.imageUrl }}">
+                                Edit
+                            </button>
+                            <form method="POST" action="{{ path('admin_rooms') }}" style="display:inline;" onsubmit="return confirm('Delete this room?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_rooms') }}">
+                                <input type="hidden" name="room_id" value="{{ room.id }}">
+                                <button type="submit" name="delete_room" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block modals %}
+<!-- Room Modal -->
+<div class="admin-modal-overlay" id="roomModal">
+    <div class="admin-modal">
+        <div class="admin-modal-header">
+            <h3>Add New Room</h3>
+            <button class="admin-modal-close" aria-label="Close">&times;</button>
+        </div>
+        <form method="POST" action="{{ path('admin_rooms') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_rooms') }}">
+            <div class="admin-modal-body">
+                <input type="hidden" name="edit_id" value="">
+                <div class="form-group">
+                    <label for="roomName">Room Name *</label>
+                    <input type="text" id="roomName" name="name" placeholder="e.g. Deluxe Ocean Suite" required>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="form-group">
+                        <label for="roomBadge">Badge Label *</label>
+                        <input type="text" id="roomBadge" name="badge" placeholder="e.g. Deluxe">
+                    </div>
+                    <div class="form-group">
+                        <label for="roomBadgeClass">Badge Class *</label>
+                        <select id="roomBadgeClass" name="badge_class">
+                            <option value="standard">Standard</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="suite">Suite</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="roomSpecs">Specs *</label>
+                    <input type="text" id="roomSpecs" name="specs" placeholder="e.g. 38 sqm · 2 Guests · King">
+                </div>
+                <div class="form-group">
+                    <label for="roomPrice">Price per Night (₱) *</label>
+                    <input type="number" id="roomPrice" name="price" step="0.01" min="0" placeholder="4500">
+                </div>
+                <div class="form-group">
+                    <label for="roomDesc">Description</label>
+                    <textarea id="roomDesc" name="description" placeholder="Room description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="roomImage">Image URL *</label>
+                    <input type="text" id="roomImage" name="image_url" placeholder="images/room.jpg or https://...">
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-btn admin-btn-outline admin-modal-close">Cancel</button>
+                <button type="submit" name="save_room" class="admin-btn admin-btn-gold">Save Room</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

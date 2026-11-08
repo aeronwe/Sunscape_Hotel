@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{% block title %}Admin Panel | Ejercito's Sunscape Resort{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <img src="{{ asset('images/LGO.svg') }}" alt="Resort Logo">
+            </div>
+            <div class="sidebar-brand">
+                Sunscape Resort
+                <small>Management</small>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-label">Main</div>
+            <a href="{{ path('admin_dashboard') }}" class="sidebar-link {% if current_page|default('') == 'dashboard' %}active{% endif %}">
+                Dashboard
+            </a>
+            <a href="{{ path('admin_reservations') }}" class="sidebar-link {% if current_page|default('') == 'reservations' %}active{% endif %}">
+                Reservations
+            </a>
+
+            <div class="sidebar-nav-label">Manage</div>
+            <a href="{{ path('admin_rooms') }}" class="sidebar-link {% if current_page|default('') == 'rooms' %}active{% endif %}">
+                Rooms
+            </a>
+            <a href="{{ path('admin_services') }}" class="sidebar-link {% if current_page|default('') == 'services' %}active{% endif %}">
+                Services &amp; Schedules
+            </a>
+
+            <div class="sidebar-nav-label">System</div>
+            <a href="{{ path('admin_settings') }}" class="sidebar-link {% if current_page|default('') == 'settings' %}active{% endif %}">
+                Admin Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <form method="POST" action="{{ path('admin_logout') }}">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                <button type="submit" class="sidebar-link logout-link">Logout</button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <button class="admin-mobile-toggle" aria-label="Toggle sidebar">
+                    <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+                <h1 class="topbar-title">{% block topbar_title %}Dashboard{% endblock %}</h1>
+            </div>
+            <div class="topbar-right">
+                {% set adminName = app.user ? app.user.name : 'Admin' %}
+                {% set adminInitial = adminName|slice(0, 1)|upper %}
+                <a href="{{ path('admin_settings') }}" class="topbar-admin-name" style="text-decoration:none; color:inherit;">{{ adminName }}</a>
+                <a href="{{ path('admin_settings') }}" class="topbar-avatar" style="text-decoration:none;" title="Account Settings">{{ adminInitial }}</a>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="admin-alert admin-alert-{{ label == 'error' ? 'error' : 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</div>
+
+{% block modals %}{% endblock %}
+
+<script src="{{ asset('js/admin.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

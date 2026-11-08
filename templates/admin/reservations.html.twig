@@ -1,0 +1,94 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Reservations | Admin Panel{% endblock %}
+{% block topbar_title %}Reservations{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <div class="panel-header">
+        <h2 class="panel-title">All Reservations ({{ reservations|length }})</h2>
+        <div class="panel-actions">
+            <form method="GET" action="{{ path('admin_reservations') }}" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="text" name="search" class="admin-search" placeholder="Search guest, email, room..." value="{{ searchQuery }}">
+                <select name="status" class="admin-select">
+                    <option value="all" {% if filterStatus == 'all' %}selected{% endif %}>All Status</option>
+                    <option value="pending" {% if filterStatus == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="confirmed" {% if filterStatus == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                    <option value="cancelled" {% if filterStatus == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                </select>
+                <button type="submit" class="admin-btn admin-btn-outline">Filter</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Guest</th>
+                    <th>Email</th>
+                    <th>Room</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Guests</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if reservations is empty %}
+                    <tr><td colspan="11" style="text-align:center; padding:40px; color:var(--admin-text-dim);">No reservations found</td></tr>
+                {% else %}
+                    {% for res in reservations %}
+                        <tr>
+                            <td class="td-primary">#{{ res.id }}</td>
+                            <td class="td-primary">{{ res.fullName }}</td>
+                            <td>{{ res.email }}</td>
+                            <td>{{ res.roomType }}</td>
+                            <td>{{ res.checkinDate ? res.checkinDate|date('M d, Y') : '' }}</td>
+                            <td>{{ res.checkoutDate ? res.checkoutDate|date('M d, Y') : '' }}</td>
+                            <td>{{ res.adults }}A / {{ res.children }}C</td>
+                            <td>₱{{ res.totalAmount|number_format(0, '.', ',') }}</td>
+                            <td>{{ res.paymentMethod }}</td>
+                            <td><span class="status-badge status-{{ res.status }}">{{ res.status }}</span></td>
+                            <td>
+                                <div class="td-actions">
+                                    {% if res.status == 'pending' %}
+                                        <form method="POST" action="{{ path('admin_reservations') }}" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_reservations') }}">
+                                            <input type="hidden" name="reservation_id" value="{{ res.id }}">
+                                            <input type="hidden" name="new_status" value="confirmed">
+                                            <button type="submit" name="update_status" class="admin-btn admin-btn-sm admin-btn-green">Confirm</button>
+                                        </form>
+                                        <form method="POST" action="{{ path('admin_reservations') }}" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_reservations') }}">
+                                            <input type="hidden" name="reservation_id" value="{{ res.id }}">
+                                            <input type="hidden" name="new_status" value="cancelled">
+                                            <button type="submit" name="update_status" class="admin-btn admin-btn-sm admin-btn-red">Cancel</button>
+                                        </form>
+                                    {% elseif res.status == 'confirmed' %}
+                                        <form method="POST" action="{{ path('admin_reservations') }}" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_reservations') }}">
+                                            <input type="hidden" name="reservation_id" value="{{ res.id }}">
+                                            <input type="hidden" name="new_status" value="cancelled">
+                                            <button type="submit" name="update_status" class="admin-btn admin-btn-sm admin-btn-red">Cancel</button>
+                                        </form>
+                                    {% endif %}
+                                    <form method="POST" action="{{ path('admin_reservations') }}" style="display:inline;" onsubmit="return confirm('Delete reservation #{{ res.id }}?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin_reservations') }}">
+                                        <input type="hidden" name="reservation_id" value="{{ res.id }}">
+                                        <button type="submit" name="delete_reservation" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,218 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ venue.name }} | Ejercito's Sunscape Resort{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/dining-detail.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+    <!-- Breadcrumb -->
+    <div class="rd-breadcrumb-bar">
+        <div class="container">
+            <p class="booking-breadcrumb">
+                <a href="{{ path('home') }}">Home</a> &gt; <a href="{{ path('dining_index') }}">Dining &amp; Cuisine</a> &gt; {{ venue.name }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Venue Switcher Tabs -->
+    <section style="padding: 16px 0 0;">
+        <div class="container">
+            <div class="dd-venue-tabs" role="tablist" aria-label="Dining Venues">
+                {% for key, v in allVenues %}
+                    <a href="{{ path('dining_detail', {id: key}) }}" class="dd-venue-tab {{ slug == key ? 'active' : '' }}">
+                        {{ v.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Gallery -->
+    <section class="rd-gallery-section" style="padding-top: 0;">
+        <div class="container">
+            <div class="rd-gallery">
+                <div class="rd-gallery-main">
+                    {% set firstImg = venue.images[0] starts with 'http' ? venue.images[0] : asset(venue.images[0]) %}
+                    <img src="{{ firstImg }}" alt="{{ venue.name }} - Main View" id="rdMainImage">
+                </div>
+                <div class="rd-gallery-thumbs">
+                    {% for i, img in venue.images %}
+                        {% set thumbImg = img starts with 'http' ? img : asset(img) %}
+                        <div class="rd-thumb {{ loop.first ? 'rd-thumb-active' : '' }}" onclick="changeMainImage('{{ thumbImg }}', this)">
+                            <img src="{{ thumbImg }}" alt="{{ venue.name }} View {{ loop.index }}" loading="lazy">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Venue Content Section -->
+    <section class="rd-content-section">
+        <div class="container">
+            <div class="rd-layout">
+                <!-- Left Column: Venue Information -->
+                <div class="rd-info-column">
+                    <span class="room-badge {{ venue.badge_class }}">{{ venue.tag }}</span>
+                    <h1 class="rd-room-name">{{ venue.name }}</h1>
+                    <p class="rd-room-specs">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        {{ venue.hours }} &middot; {{ venue.location }} &middot; {{ venue.price_range }}
+                    </p>
+                    <p class="rd-room-desc">{{ venue.description }}</p>
+
+                    <!-- Highlights & Amenities -->
+                    <h2 class="rd-section-heading">Dining Highlights</h2>
+                    <div class="rd-amenities-grid">
+                        {% for item in venue.highlights %}
+                            <div class="rd-amenity">
+                                <span class="rd-amenity-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                                </span>
+                                <span>{{ item }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Popular Menu -->
+                    <h2 class="rd-section-heading">Popular Menu</h2>
+                    <div class="dd-menu-grid">
+                        {% for dish in venue.menu %}
+                            <div class="dd-menu-item">
+                                <div class="dd-menu-header">
+                                    <span class="dd-menu-title">{{ dish.name }}</span>
+                                    <span class="dd-menu-price">{{ dish.price }}</span>
+                                </div>
+                                <p class="dd-menu-desc">{{ dish.description }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Dining Guidelines -->
+                    <h2 class="rd-section-heading">Dining Guidelines</h2>
+                    <ul class="rd-policies">
+                        {% for guide in venue.guidelines %}
+                            <li>
+                                <span class="rd-policy-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                                </span>
+                                <span>{{ guide }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Right Column: Table Reservation Card -->
+                <div class="rd-booking-column">
+                    <div class="rd-price-card">
+                        <div class="rd-price-display">
+                            <div>
+                                <span class="rd-price-amount" style="font-size: 1.35rem;">{{ venue.hours }}</span>
+                                <div class="rd-price-label">Open Daily</div>
+                            </div>
+                        </div>
+
+                        <form id="diningReserveForm" onsubmit="event.preventDefault(); alert('Thank you! Your table request has been received. Our team will confirm shortly.'); this.reset();">
+                            <div class="rd-booking-fields">
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Reservation Date</span>
+                                    <input type="date" id="diningDate" required style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                </label>
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Preferred Time</span>
+                                    <select id="diningTime" required style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                        <option value="">Select a time</option>
+                                        <option value="breakfast">Morning (7:00 AM - 10:00 AM)</option>
+                                        <option value="lunch">Lunch (11:30 AM - 2:00 PM)</option>
+                                        <option value="sunset">Sunset (4:30 PM - 6:30 PM)</option>
+                                        <option value="dinner">Dinner (7:00 PM - 9:30 PM)</option>
+                                        <option value="late">Late Night (10:00 PM - 2:00 AM)</option>
+                                    </select>
+                                </label>
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Number of Guests</span>
+                                    <select id="diningGuests" required style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                        <option value="1">1 Guest</option>
+                                        <option value="2" selected>2 Guests</option>
+                                        <option value="3">3 Guests</option>
+                                        <option value="4">4 Guests</option>
+                                        <option value="5">5 Guests</option>
+                                        <option value="6-plus">6 or More Guests</option>
+                                    </select>
+                                </label>
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Special Requests (Optional)</span>
+                                    <input type="text" placeholder="Seating preference or notes" style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn-confirm-booking" style="width: 100%; border: none; cursor: pointer;">
+                                Include Now
+                            </button>
+                        </form>
+
+                        <p class="summary-cancel-note" style="margin-top: 14px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            Free table booking. Walk-ins always welcome.
+                        </p>
+
+                        <div class="dd-contact-box">
+                            <span>Direct Dining Inquiries:</span>
+                            <a href="tel:+639123456789" class="dd-contact-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                +63 912 345 6789
+                            </a>
+                            <a href="mailto:reservations@ejercitosunscape.ph" class="dd-contact-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                reservations@ejercitosunscape.ph
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guest Testimonials -->
+    <section class="rd-testimonials-section">
+        <div class="container">
+            <h2 class="rd-section-heading" style="margin-top: 0;">Guest Feedback</h2>
+            <p class="rd-testimonials-sub">What our guests say about dining with us</p>
+            <div class="rd-testimonials-grid">
+                {% for t in venue.testimonials %}
+                    <div class="rd-testimonial-card">
+                        <p class="rd-testimonial-text">"{{ t.text }}"<br>- {{ t.name }}</p>
+                        <div class="rd-testimonial-stars">{% for s in 1..t.stars %}★{% endfor %}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+function changeMainImage(src, thumb) {
+    var main = document.getElementById('rdMainImage');
+    if (!main) return;
+    main.src = src;
+    document.querySelectorAll('.rd-thumb').forEach(function(t) {
+        t.classList.remove('rd-thumb-active');
+    });
+    if (thumb) {
+        thumb.classList.add('rd-thumb-active');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var dInput = document.getElementById('diningDate');
+    if (dInput) {
+        var today = new Date().toISOString().split('T')[0];
+        dInput.setAttribute('min', today);
+        dInput.value = today;
+    }
+});
+</script>
+{% endblock %}

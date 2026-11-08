@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %}
+{% block title %}My Account | Ejercito's Sunscape Resort{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/account.css') }}">
+{% endblock %}
+
+{% block body %}
+<section class="auth-page">
+    <div class="auth-container">
+        <div class="dashboard-card">
+
+            <div class="dashboard-header">
+                <div class="dashboard-avatar">
+                    {{ (user.firstName|slice(0,1) ~ user.lastName|slice(0,1))|upper }}
+                </div>
+                <h1 class="dashboard-title">Welcome, {{ user.firstName }}!</h1>
+                <p class="dashboard-subtitle">Manage your account details below</p>
+            </div>
+
+            {% if success_msg %}
+                <div class="alert alert-success">{{ success_msg }}</div>
+            {% endif %}
+
+            {% if errors|length > 0 %}
+                <div class="alert alert-error">
+                    <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                </div>
+            {% endif %}
+
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <div class="user-info-card">
+                <h2 class="user-info-heading">Account Information</h2>
+                <div class="user-info-grid">
+                    <div class="user-info-item">
+                        <span class="user-info-label">Name</span>
+                        <span class="user-info-value">{{ user.firstName }} {{ user.lastName }}</span>
+                    </div>
+                    <div class="user-info-item">
+                        <span class="user-info-label">Email</span>
+                        <span class="user-info-value">{{ user.email }}</span>
+                    </div>
+                    <div class="user-info-item">
+                        <span class="user-info-label">Member Since</span>
+                        <span class="user-info-value">{{ user.createdAt|date('F j, Y') }}</span>
+                    </div>
+                    <div class="user-info-item">
+                        <span class="user-info-label">Last Updated</span>
+                        <span class="user-info-value">{{ user.updatedAt ? user.updatedAt|date('F j, Y · g:i A') : user.createdAt|date('F j, Y · g:i A') }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Reservations Section #}
+            <div class="reservations-section">
+                <div class="reservations-section-header">
+                    <h2 class="reservations-heading">My Bookings &amp; Reservations</h2>
+                    <a href="{{ path('booking_index') }}" class="btn-book-more">+ New Booking</a>
+                </div>
+
+                {% if reservations is empty %}
+                    <div class="empty-reservations-box">
+                        <p>You haven't made any room reservations yet.</p>
+                        <a href="{{ path('booking_index') }}" class="btn-auth" style="display:inline-block; max-width:220px; margin:0 auto; padding:10px 20px; text-decoration:none;">Book a Room &rarr;</a>
+                    </div>
+                {% else %}
+                    <div class="res-list">
+                        {% for res in reservations %}
+                            {% set checkin  = res.checkinDate %}
+                            {% set checkout = res.checkoutDate %}
+                            {% set nights   = checkin and checkout ? ((checkout.timestamp - checkin.timestamp) / 86400)|round(0, 'floor') : 0 %}
+                            <div class="res-card">
+                                <div class="res-card-header">
+                                    <div>
+                                        <span class="res-id">Reservation #{{ res.id }}</span>
+                                        <span class="res-status res-status-{{ res.status }}">{{ res.status|capitalize }}</span>
+                                    </div>
+                                    <span class="res-booked-on">Booked {{ res.createdAt|date('M j, Y') }}</span>
+                                </div>
+                                <div class="res-room-name">{{ res.roomType }}</div>
+                                <div class="res-details-grid">
+                                    <div class="res-detail-item">
+                                        <span class="res-detail-label">Check-In</span>
+                                        <span class="res-detail-value">{{ checkin ? checkin|date('M j, Y') : '—' }}</span>
+                                    </div>
+                                    <div class="res-detail-item">
+                                        <span class="res-detail-label">Check-Out</span>
+                                        <span class="res-detail-value">{{ checkout ? checkout|date('M j, Y') : '—' }}</span>
+                                    </div>
+                                    <div class="res-detail-item">
+                                        <span class="res-detail-label">Duration</span>
+                                        <span class="res-detail-value">{{ nights }} Night{{ nights != 1 ? 's' : '' }}</span>
+                                    </div>
+                                    <div class="res-detail-item">
+                                        <span class="res-detail-label">Guests</span>
+                                        <span class="res-detail-value">
+                                            {{ res.adults }} Adult{{ res.adults != 1 ? 's' : '' }}{% if res.children > 0 %}, {{ res.children }} Child{{ res.children != 1 ? 'ren' : '' }}{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="res-detail-item">
+                                        <span class="res-detail-label">Total Amount</span>
+                                        <span class="res-detail-value">₱{{ res.totalAmount|number_format(2) }}</span>
+                                    </div>
+                                    <div class="res-detail-item">
+                                        <span class="res-detail-label">Payment</span>
+                                        <span class="res-detail-value">{{ res.paymentMethod|replace({'_': ' '})|title }}</span>
+                                    </div>
+                                </div>
+                                {% if res.specialRequests %}
+                                    <div class="res-note">
+                                        <strong>Notes / Selected Experiences:</strong><br>
+                                        {{ res.specialRequests|nl2br }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Update Profile #}
+            <div class="profile-section">
+                <h2 class="profile-section-title">Update Profile</h2>
+                <form class="auth-form" method="POST" action="{{ path('account_index') }}" id="updateForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+                    <div class="form-row">
+                        <div class="form-group form-group-half">
+                            <label for="first_name" class="form-label">First Name</label>
+                            <input type="text" id="first_name" name="first_name" class="form-input"
+                                   value="{{ user.firstName }}" required>
+                        </div>
+                        <div class="form-group form-group-half">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" class="form-input"
+                                   value="{{ user.lastName }}" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input"
+                               value="{{ user.email }}" required>
+                    </div>
+                    <button type="submit" name="update_profile" class="btn-auth" id="updateBtn">Save Changes</button>
+                </form>
+            </div>
+
+            {# Danger Zone #}
+            <div class="danger-zone">
+                <h2 class="danger-zone-title">Danger Zone</h2>
+                <p class="danger-zone-text">Deleting your account is permanent and cannot be undone.</p>
+                <form method="POST" action="{{ path('account_index') }}" id="deleteForm"
+                      onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+                    <button type="submit" name="delete_account" class="btn-delete" id="deleteBtn">Delete My Account</button>
+                </form>
+            </div>
+
+            <div class="dashboard-actions">
+                <a href="{{ path('home') }}" class="btn-auth btn-secondary">← Back to Homepage</a>
+                <form method="POST" action="{{ path('app_logout') }}" style="display:inline;">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                    <button type="submit" class="btn-auth btn-outline">Logout</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

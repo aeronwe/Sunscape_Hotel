@@ -1,0 +1,131 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Services &amp; Schedules | Admin Panel{% endblock %}
+{% block topbar_title %}Services &amp; Schedules{% endblock %}
+
+{% set categoryLabels = {
+    'dining': 'Dining & Restaurant',
+    'experience': 'Experiences & Tours',
+    'brand': 'Brands & Venues'
+} %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+    <h2 style="font-size:1.1rem; font-weight:700; color:var(--admin-text);">All Services ({{ allServices|length }})</h2>
+    <button class="admin-btn admin-btn-gold" data-modal-open="serviceModal" data-add-title="Add New Service">
+        Add Service
+    </button>
+</div>
+
+{% for cat, services in grouped %}
+    <div class="admin-panel services-category">
+        <div class="services-category-title">{{ categoryLabels[cat]|default(cat|capitalize) }} ({{ services|length }})</div>
+        {% if services is empty %}
+            <div class="admin-empty" style="padding:32px;">
+                <p>No services in this category yet.</p>
+            </div>
+        {% else %}
+            <div class="admin-services-grid">
+                {% for svc in services %}
+                    {% set serviceImage = svc.imageUrl|replace({'../../assets/': '', '../assets/': '', 'assets/': ''})|trim('/') %}
+                    {% set serviceImageUrl = serviceImage starts with 'http://' or serviceImage starts with 'https://' ? serviceImage : asset(serviceImage starts with 'images/' ? serviceImage : 'images/' ~ serviceImage) %}
+                    <div class="admin-service-card">
+                        <div class="admin-service-img">
+                            <img src="{{ serviceImageUrl }}" alt="{{ svc.name }}" loading="lazy">
+                        </div>
+                        <div class="admin-service-body">
+                            <h4>{{ svc.name }}</h4>
+                            {% if svc.tag %}
+                                <p class="admin-service-tag">{{ svc.tag }}</p>
+                            {% endif %}
+                            {% if svc.hours %}
+                                <p class="admin-service-hours">Schedule: {{ svc.hours }}</p>
+                            {% endif %}
+                            {% if svc.price > 0 %}
+                                <p style="font-size:0.85rem; font-weight:700; color:var(--admin-gold); margin-bottom:8px;">₱{{ svc.price|number_format(2, '.', ',') }}<span style="font-size:0.75rem; font-weight:400; color:var(--admin-text-dim);"> / person</span></p>
+                            {% endif %}
+                            {% if svc.description %}
+                                <p style="font-size:0.78rem; color:var(--admin-text-dim); margin-bottom:10px; line-height:1.5;">{{ svc.description|length > 100 ? svc.description|slice(0, 100) ~ '...' : svc.description }}</p>
+                            {% endif %}
+                            <div class="admin-service-actions">
+                                <button class="admin-btn admin-btn-sm admin-btn-blue"
+                                    data-modal-open="serviceModal"
+                                    data-edit-id="{{ svc.id }}"
+                                    data-edit-title="Edit Service"
+                                    data-field-category="{{ svc.category }}"
+                                    data-field-name="{{ svc.name }}"
+                                    data-field-tag="{{ svc.tag|default('') }}"
+                                    data-field-description="{{ svc.description|default('') }}"
+                                    data-field-hours="{{ svc.hours|default('') }}"
+                                    data-field-price="{{ svc.price }}"
+                                    data-field-image_url="{{ svc.imageUrl }}">
+                                    Edit
+                                </button>
+                                <form method="POST" action="{{ path('admin_services') }}" style="display:inline;" onsubmit="return confirm('Delete this service?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_services') }}">
+                                    <input type="hidden" name="service_id" value="{{ svc.id }}">
+                                    <button type="submit" name="delete_service" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}
+{% endblock %}
+
+{% block modals %}
+<!-- Service Modal -->
+<div class="admin-modal-overlay" id="serviceModal">
+    <div class="admin-modal">
+        <div class="admin-modal-header">
+            <h3>Add New Service</h3>
+            <button class="admin-modal-close" aria-label="Close">&times;</button>
+        </div>
+        <form method="POST" action="{{ path('admin_services') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_services') }}">
+            <div class="admin-modal-body">
+                <input type="hidden" name="edit_id" value="">
+                <div class="form-group">
+                    <label for="svcCategory">Category *</label>
+                    <select id="svcCategory" name="category" required>
+                        <option value="dining">Dining</option>
+                        <option value="experience">Experience</option>
+                        <option value="brand">Brand</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="svcName">Service Name *</label>
+                    <input type="text" id="svcName" name="name" placeholder="e.g. Island Bar" required>
+                </div>
+                <div class="form-group">
+                    <label for="svcTag">Tag / Subtitle</label>
+                    <input type="text" id="svcTag" name="tag" placeholder="e.g. Cocktails &amp; Nightlife">
+                </div>
+                <div class="form-group">
+                    <label for="svcHours">Operating Hours / Schedule</label>
+                    <input type="text" id="svcHours" name="hours" placeholder="e.g. 5:00 PM – 12:00 AM daily">
+                </div>
+                <div class="form-group">
+                    <label for="svcPrice">Price (₱, optional / per guest)</label>
+                    <input type="number" id="svcPrice" name="price" step="0.01" min="0" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="svcDesc">Description</label>
+                    <textarea id="svcDesc" name="description" placeholder="Describe this service..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="svcImage">Image URL *</label>
+                    <input type="text" id="svcImage" name="image_url" placeholder="images/island_bar.jpg or https://..." required>
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-btn admin-btn-outline admin-modal-close">Cancel</button>
+                <button type="submit" name="save_service" class="admin-btn admin-btn-gold">Save Service</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

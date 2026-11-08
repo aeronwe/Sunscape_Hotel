@@ -1,0 +1,361 @@
+/* Contact Page Styles */
+
+/* ---------- Header & Form Input Styles Shared with Booking ---------- */
+.booking-page-header {
+    background: var(--color-forest);
+    padding: 40px 24px 36px;
+    text-align: center;
+    color: var(--color-cream);
+}
+
+.booking-page-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.booking-breadcrumb {
+    font-size: 0.82rem;
+    color: rgba(244, 239, 228, 0.7);
+    margin: 0;
+}
+
+.booking-breadcrumb a {
+    color: rgba(244, 239, 228, 0.55);
+    transition: color 0.3s ease;
+}
+
+.booking-breadcrumb a:hover {
+    color: var(--color-gold);
+}
+
+.booking-card-title {
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-bottom: 22px;
+}
+
+.booking-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.booking-field-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--color-text-light);
+    margin-bottom: 8px;
+}
+
+.booking-field-outlined {
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    background: var(--color-cream);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.booking-field-outlined:focus-within {
+    border-color: var(--color-forest);
+    box-shadow: 0 0 0 2px rgba(43, 58, 43, 0.12);
+    background: var(--color-white);
+}
+
+.booking-field-outlined label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--color-text-light);
+    margin-bottom: 3px;
+}
+
+.booking-field-outlined input,
+.booking-field-outlined select,
+.booking-field-outlined textarea {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--color-text-dark);
+}
+
+.btn-confirm-booking {
+    display: block;
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--color-forest);
+    color: var(--color-cream);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 18px;
+}
+
+.btn-confirm-booking:hover {
+    background: var(--color-forest-dark);
+    box-shadow: 0 4px 14px rgba(43, 58, 43, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ============================================
+   CONTACT PAGE
+   ============================================ */
+.contact-section {
+    padding: 48px 0 70px;
+}
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+.contact-form-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    box-shadow: var(--shadow-sm);
+}
+
+.contact-info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-info-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 20px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.contact-info-icon {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    background: rgba(43, 58, 43, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-forest);
+}
+
+.contact-info-icon svg,
+.contact-info-icon .lucide {
+    width: 22px;
+    height: 22px;
+    stroke: var(--color-forest);
+    display: block;
+}
+
+.contact-info-label {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--color-gold-dark);
+    margin-bottom: 4px;
+}
+
+.contact-info-card p {
+    font-size: 0.88rem;
+    color: var(--color-text-medium);
+    line-height: 1.6;
+}
+
+.contact-social-row {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 18px 22px;
+    box-shadow: var(--shadow-sm);
+}
+
+.contact-social-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.contact-social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(43, 58, 43, 0.06);
+    color: var(--color-forest);
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+}
+
+.contact-social-btn svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+
+.contact-social-btn:hover {
+    background: var(--color-forest);
+    color: var(--color-cream);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(43, 58, 43, 0.25);
+}
+
+/* Maps Section */
+.contact-map-section {
+    padding: 20px 0 70px;
+}
+
+.rd-section-heading,
+.contact-map-section h2 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-forest-dark);
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+}
+
+.contact-map-wrap {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-border);
+}
+
+.contact-map-wrap iframe {
+    display: block;
+}
+
+
+
+/* ---------- Alerts & Lightbox ---------- */
+.alert {
+    padding: 14px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.alert-success {
+    background: rgba(107, 127, 82, 0.15);
+    border: 1px solid rgba(107, 127, 82, 0.35);
+    color: var(--color-forest-dark);
+}
+
+.alert-error {
+    background: rgba(161, 75, 58, 0.1);
+    border: 1px solid rgba(161, 75, 58, 0.3);
+    color: #A14B3A;
+}
+
+.image-lightbox-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.image-lightbox-overlay.active {
+    display: flex;
+}
+
+.image-lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 85vh;
+}
+
+.image-lightbox-content img {
+    width: 100%;
+    height: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: -36px;
+    right: 0;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+
+/* ---------- Contact Responsive Media Queries ---------- */
+@media (max-width: 860px) {
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .booking-page-header {
+        padding-top: 32px;
+        padding-bottom: 30px;
+    }
+
+    .booking-page-header h1 {
+        font-size: 1.7rem;
+    }
+
+    .contact-social-buttons {
+        gap: 8px;
+    }
+
+    .contact-map-section {
+        padding-bottom: 48px;
+    }
+
+    .contact-map-wrap iframe {
+        height: 280px;
+    }
+}

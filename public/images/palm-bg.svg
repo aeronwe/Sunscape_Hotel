@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="currentColor">
+  <!-- Trunk -->
+  <path d="M195 600 Q190 500 200 400 Q205 320 197 260" stroke="currentColor" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <!-- Fronds left -->
+  <path d="M197 260 Q140 200 40 190 Q120 225 180 258 Z" fill="currentColor"/>
+  <path d="M197 260 Q120 210 40 240 Q120 245 175 268 Z" fill="currentColor"/>
+  <path d="M197 260 Q130 250 60 300 Q130 275 180 275 Z" fill="currentColor"/>
+  <path d="M197 260 Q155 280 100 345 Q150 305 185 288 Z" fill="currentColor"/>
+  <!-- Frond spines left -->
+  <path d="M197 260 Q135 195 40 190" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M197 260 Q115 205 40 240" stroke="currentColor" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M197 260 Q125 245 60 300" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M197 260 Q150 275 100 345" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Fronds right -->
+  <path d="M197 260 Q260 200 360 190 Q280 225 220 258 Z" fill="currentColor"/>
+  <path d="M197 260 Q280 210 360 240 Q280 245 225 268 Z" fill="currentColor"/>
+  <path d="M197 260 Q270 250 340 300 Q270 275 220 275 Z" fill="currentColor"/>
+  <path d="M197 260 Q245 280 300 345 Q250 305 215 288 Z" fill="currentColor"/>
+  <!-- Frond spines right -->
+  <path d="M197 260 Q265 195 360 190" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M197 260 Q285 205 360 240" stroke="currentColor" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M197 260 Q275 245 340 300" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M197 260 Q250 275 300 345" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Top fronds -->
+  <path d="M195 258 Q188 200 182 175" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M199 258 Q206 200 212 175" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M182 175 Q197 210 212 175" fill="currentColor" opacity="0.8"/>
+  <!-- Coconuts -->
+  <circle cx="189" cy="265" r="8" fill="currentColor"/>
+  <circle cx="206" cy="263" r="7" fill="currentColor"/>
+  <circle cx="197" cy="256" r="7" fill="currentColor" opacity="0.8"/>
+</svg>

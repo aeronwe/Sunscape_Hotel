@@ -1,0 +1,350 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Malaya Tours Island Hopping Adventure | Ejercito's Sunscape Resort{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/malaya-tours.css') }}">
+{% endblock %}
+
+{% block body_class %}inner-page{% endblock %}
+
+{% block body %}
+<main>
+    <!-- Breadcrumb -->
+    <div class="rd-breadcrumb-bar">
+        <div class="container">
+            <p class="booking-breadcrumb">
+                <a href="{{ path('home') }}">Home</a> &gt; <a href="{{ path('experience_index') }}">Experiences &amp; Activities</a> &gt; Malaya Island Hopping
+            </p>
+        </div>
+    </div>
+
+    <!-- Image Gallery -->
+    <section class="rd-gallery-section">
+        <div class="container">
+            <div class="rd-gallery">
+                <div class="rd-gallery-main">
+                    <img src="{{ asset('images/island_hopping.jpg') }}" alt="Malaya Tours Island Hopping Adventure - Main Image" id="rdMainImage">
+                </div>
+                <div class="rd-gallery-thumbs">
+                    <div class="rd-thumb rd-thumb-active" onclick="changeMainImage('{{ asset('images/island_hopping.jpg') }}', this)">
+                        <img src="{{ asset('images/island_hopping.jpg') }}" alt="Malaya Tours Island Hopping Adventure View 1" loading="lazy">
+                    </div>
+                    <div class="rd-thumb" onclick="changeMainImage('https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&amp;fit=crop&amp;w=1000&amp;q=80', this)">
+                        <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&amp;fit=crop&amp;w=1000&amp;q=80" alt="Malaya Tours Island Hopping Adventure View 2" loading="lazy">
+                    </div>
+                    <div class="rd-thumb" onclick="changeMainImage('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&amp;fit=crop&amp;w=1000&amp;q=80', this)">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&amp;fit=crop&amp;w=1000&amp;q=80" alt="Malaya Tours Island Hopping Adventure View 3" loading="lazy">
+                    </div>
+                    <div class="rd-thumb" onclick="changeMainImage('https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&amp;fit=crop&amp;w=1000&amp;q=80', this)">
+                        <img src="https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&amp;fit=crop&amp;w=1000&amp;q=80" alt="Malaya Tours Island Hopping Adventure View 4" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tour Content -->
+    <section class="rd-content-section">
+        <div class="container">
+            <div class="rd-layout">
+                <!-- Left Column -->
+                <div class="rd-info-column">
+                    <span class="room-badge suite">Malaya Tours</span>
+                    <h1 class="rd-room-name">Malaya Tours Island Hopping Adventure</h1>
+                    <p class="rd-room-specs">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Full Day (8:00 AM - 4:00 PM) &middot; Up to 12 guests per boat &middot; Departs from Sunscape Resort Beachfront
+                    </p>
+                    <p class="rd-room-desc">Explore hidden coves, sandbars, and snorkeling spots around Siquijor. Sail on a traditional motorized boat across clear blue water with experienced local guides, visit marine sanctuaries, and enjoy a fresh beachside lunch under the sun.</p>
+
+                    <!-- Highlights -->
+                    <h2 class="rd-section-heading">Tour Highlights</h2>
+                    <div class="rd-amenities-grid">
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M160-40 96-88l114-152 31-178q3-24 19-42.5t41-24.5l379-115 80-160 120-120 40 40-100 116-60 184-200 140-234 74-46 126L160-40Zm-40-320q-33 0-56.5-23.5T40-440q0-33 23.5-56.5T120-520q33 0 56.5 23.5T200-440q0 33-23.5 56.5T120-360Zm236-196q-24 7-45.5-5.5T282-598q-7-24 5.5-46t36.5-28l182-48 31 116-181 48Z"/></svg></span>
+                            <span>Marine Sanctuary Snorkeling</span>
+                        </div>
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M80-146v-78q29 0 49.5-9t41.5-19.5q21-10.5 46.5-19T280-280q38 0 62.5 8.5t45.5 19q21 10.5 42 19.5t50 9q29 0 50-9t42-19.5q21-10.5 46-19t62-8.5q38 0 63 8.5t46 19q21 10.5 42 19.5t49 9v78q-38 0-63.5-9T770-174.5q-21-10.5-41-19t-49-8.5q-28 0-48.5 8.5t-41 19Q570-164 544.5-155t-64.5 9q-39 0-64.5-9t-46-19.5Q349-185 329-193.5t-49-8.5q-28 0-48.5 8.5t-41.5 19Q169-164 143.5-155T80-146Z"/></svg></span>
+                            <span>White Sand Sandbars</span>
+                        </div>
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="m120-420 320-460v460H120Zm153-80h87v-125l-87 125Zm227 80q12-28 26-98t14-142q0-72-13.5-148T500-920q61 18 121.5 67t109 117q48.5 68 79 149.5T840-420H500Zm104-80h148q-17-77-55.5-141T615-750q2 21 3.5 43.5T620-660q0 47-4.5 87T604-500ZM360-200q-36 0-67-17t-53-43q-14 15-30.5 28T173-211q-35-26-59.5-64.5T80-360h800q-9 46-33.5 84.5T787-211q-20-8-36.5-21T720-260q-23 26-53.5 43T600-200q-36 0-67-17t-53-43q-22 26-53 43t-67 17Z"/></svg></span>
+                            <span>Traditional Outrigger Boat</span>
+                        </div>
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/></svg></span>
+                            <span>Local Island Guide</span>
+                        </div>
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg></span>
+                            <span>Snorkel Gear Included</span>
+                        </div>
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M280-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z"/></svg></span>
+                            <span>Fresh Beachside Lunch</span>
+                        </div>
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg></span>
+                            <span>Life Vests Provided</span>
+                        </div>
+                        <div class="rd-amenity">
+                            <span class="rd-amenity-icon"><svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="M240-120v-80h200v-200L160-760v-80h640v80L520-400v200h200v80H240Zm106-640h268l80-100H266l80 100Z"/></svg></span>
+                            <span>Chilled Water and Fruits</span>
+                        </div>
+                    </div>
+
+                    <!-- Daily Itinerary -->
+                    <h2 class="rd-section-heading">Tour Itinerary</h2>
+                    <div class="tour-itinerary">
+                        <div class="tour-itinerary-item">
+                            <span class="tour-time-badge">8:00 AM</span>
+                            <div>
+                                <div class="tour-itinerary-title">Resort Beachfront Departure</div>
+                                <p class="tour-itinerary-desc">Meet your local boat captain and guide at the resort beachfront for safety briefing and gear fitting.</p>
+                            </div>
+                        </div>
+                        <div class="tour-itinerary-item">
+                            <span class="tour-time-badge">9:00 AM</span>
+                            <div>
+                                <div class="tour-itinerary-title">Tubod Marine Sanctuary Snorkeling</div>
+                                <p class="tour-itinerary-desc">Swim among colorful coral gardens, giant clams, and schools of tropical fish in protected waters.</p>
+                            </div>
+                        </div>
+                        <div class="tour-itinerary-item">
+                            <span class="tour-time-badge">11:00 AM</span>
+                            <div>
+                                <div class="tour-itinerary-title">Paliton Sandbar and Swimming</div>
+                                <p class="tour-itinerary-desc">Relax on powdery white sand, take photos, and swim in calm shallow turquoise waters.</p>
+                            </div>
+                        </div>
+                        <div class="tour-itinerary-item">
+                            <span class="tour-time-badge">12:30 PM</span>
+                            <div>
+                                <div class="tour-itinerary-title">Fresh Beachside Picnic Lunch</div>
+                                <p class="tour-itinerary-desc">Feast on grilled seafood, island barbecue chicken, fresh tropical fruits, and coconut water on a quiet beach.</p>
+                            </div>
+                        </div>
+                        <div class="tour-itinerary-item">
+                            <span class="tour-time-badge">2:00 PM</span>
+                            <div>
+                                <div class="tour-itinerary-title">Solangon Reef and Turtle Spotting</div>
+                                <p class="tour-itinerary-desc">Snorkel over vibrant sea meadows where gentle green sea turtles frequently feed and rest.</p>
+                            </div>
+                        </div>
+                        <div class="tour-itinerary-item">
+                            <span class="tour-time-badge">3:30 PM</span>
+                            <div>
+                                <div class="tour-itinerary-title">Scenic Coastal Cruise Home</div>
+                                <p class="tour-itinerary-desc">Cruise along the scenic Siquijor shoreline back to the resort beachfront by 4:00 PM.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inclusions & What to Bring -->
+                    <div class="tour-list-grid">
+                        <div class="tour-list-card">
+                            <h3>What is Included</h3>
+                            <ul>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Licensed motorized outrigger boat and experienced boat crew</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Professional local snorkeling guide</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Clean snorkeling mask, snorkel, and life jacket</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>All marine sanctuary entrance and environmental fees</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Full island picnic lunch with fresh fruits and cold drinks</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>First aid kit and safety equipment on board</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tour-list-card">
+                            <h3>What to Bring</h3>
+                            <ul>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Swimwear and change of dry clothes</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Reef safe sunscreen and sunglasses</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Beach towel from your room</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Waterproof dry bag for personal items</span>
+                                </li>
+                                <li>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <span>Waterproof camera or phone pouch</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tour Guidelines -->
+                    <h2 class="rd-section-heading">Important Information</h2>
+                    <ul class="rd-policies">
+                        <li>
+                            <span class="rd-policy-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            </span>
+                            <span>Departure time: 8:00 AM sharp from the resort beachfront.</span>
+                        </li>
+                        <li>
+                            <span class="rd-policy-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            </span>
+                            <span>Please gather at the dive shop desk by 7:45 AM for check-in.</span>
+                        </li>
+                        <li>
+                            <span class="rd-policy-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            </span>
+                            <span>Weather check: Tours may be adjusted or rescheduled if sea conditions are rough.</span>
+                        </li>
+                        <li>
+                            <span class="rd-policy-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            </span>
+                            <span>Children under 4 years old join free. Children 5 to 11 are half price.</span>
+                        </li>
+                        <li>
+                            <span class="rd-policy-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            </span>
+                            <span>Free cancellation up to 24 hours prior to departure.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Right Column: Booking Card -->
+                <div class="rd-booking-column">
+                    <div class="rd-price-card">
+                        <div class="rd-price-display">
+                            <span class="rd-price-amount">₱3,500</span>
+                            <span class="rd-price-label">per person</span>
+                        </div>
+
+                        <form id="tourBookingForm" onsubmit="event.preventDefault(); alert('Thank you! Your island hopping booking request has been received. Our team will contact you shortly.'); this.reset();">
+                            <div class="rd-booking-fields">
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Select Tour Date</span>
+                                    <input type="date" id="tourDate" required style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                </label>
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Tour Type</span>
+                                    <select id="tourType" required style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                        <option value="joiner">Joiner Tour (₱3,500 / person)</option>
+                                        <option value="private">Private Boat Charter (₱18,000 up to 8 guests)</option>
+                                    </select>
+                                </label>
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Number of Guests</span>
+                                    <select id="tourGuests" required style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                        <option value="1">1 Guest</option>
+                                        <option value="2" selected>2 Guests</option>
+                                        <option value="3">3 Guests</option>
+                                        <option value="4">4 Guests</option>
+                                        <option value="5">5 Guests</option>
+                                        <option value="6-plus">6 or More Guests</option>
+                                    </select>
+                                </label>
+                                <label style="display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--color-text-dark); font-weight: 500;">
+                                    <span>Guest Name and Room Number</span>
+                                    <input type="text" placeholder="e.g. Juan dela Cruz - Room 204" required style="padding: 10px 12px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.88rem; background: var(--color-cream); outline: none;">
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn-confirm-booking" style="width: 100%; border: none; cursor: pointer;">
+                                Book This Adventure
+                            </button>
+                        </form>
+
+                        <p class="summary-cancel-note" style="margin-top: 14px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" width="15" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                            Free cancellation up to 24 hours before tour.
+                        </p>
+
+                        <div class="dd-contact-box">
+                            <span>Malaya Tours Desk:</span>
+                            <a href="tel:+639123456789" class="dd-contact-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                +63 912 345 6789
+                            </a>
+                            <a href="mailto:reservations@ejercitosunscape.ph" class="dd-contact-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                tours@ejercitosunscape.ph
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guest Testimonials -->
+    <section class="rd-testimonials-section">
+        <div class="container">
+            <h2 class="rd-section-heading" style="margin-top: 0;">Guest Feedback</h2>
+            <p class="rd-testimonials-sub">What our guests say about Malaya Tours</p>
+            <div class="rd-testimonials-grid">
+                <div class="rd-testimonial-card">
+                    <p class="rd-testimonial-text">"The best day of our Siquijor trip! The coral was colorful, and we saw two sea turtles up close."<br>- Carlo M.</p>
+                    <div class="rd-testimonial-stars">★★★★★</div>
+                </div>
+                <div class="rd-testimonial-card">
+                    <p class="rd-testimonial-text">"Captain and guide were so accommodating. The grilled seafood lunch on the sand was amazing."<br>- Jessica T.</p>
+                    <div class="rd-testimonial-stars">★★★★★</div>
+                </div>
+                <div class="rd-testimonial-card">
+                    <p class="rd-testimonial-text">"Very safe and well organized. Perfect for beginners and families who want an easy island day."<br>- David W.</p>
+                    <div class="rd-testimonial-stars">★★★★★</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+function changeMainImage(src, thumb) {
+    var main = document.getElementById('rdMainImage');
+    if (!main) return;
+    main.src = src;
+    document.querySelectorAll('.rd-thumb').forEach(function(t) {
+        t.classList.remove('rd-thumb-active');
+    });
+    if (thumb) {
+        thumb.classList.add('rd-thumb-active');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var tInput = document.getElementById('tourDate');
+    if (tInput) {
+        var today = new Date().toISOString().split('T')[0];
+        tInput.setAttribute('min', today);
+        tInput.value = today;
+    }
+});
+</script>
+{% endblock %}
+

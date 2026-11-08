@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block title %}Dining &amp; Cuisine | Ejercito's Sunscape Resort{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/dining.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+    <section class="inner-hero dining-hero"><p class="section-label">Culinary Experiences</p><h1>Dining &amp; Cuisine</h1><p>A feast for every sense from sunrise buffets to moonlit beachfront BBQs.</p></section>
+    <section class="dining-venues-section"><div class="container">{% for venue in venues %}<div class="dining-venue-row {% if loop.index is even %}dining-venue-row--reversed{% endif %}"><div class="dining-venue-image"><img src="{{ asset(venue.image) }}" alt="{{ venue.name }}" loading="lazy"></div><div class="dining-venue-content"><span class="dining-venue-tag">{{ venue.tag }}</span><h2 class="dining-venue-name">{{ venue.name }}</h2><p class="dining-venue-desc">{{ venue.description }}</p><p class="dining-venue-hours">◷ {{ venue.hours }}</p><a href="{{ path('dining_detail', {id: venue.slug}) }}" class="btn-view-menu">View More</a></div></div>{% endfor %}</div></section>
+    <section class="inroom-dining-banner"><div class="container"><div class="inroom-dining-inner"><div class="inroom-dining-left"><div><h3>In-Room Dining: Available</h3><p>Enjoy our full menu from the comfort of your room. Order anytime via room service telephone.</p></div></div></div></div></section>
+</main>
+{% endblock %}

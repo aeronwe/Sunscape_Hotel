@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact Us | Ejercito's Sunscape Resort{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/contact.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+    <!-- Header -->
+    <section class="booking-page-header">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p class="booking-breadcrumb">We'd love to hear from you. Get in touch with our team.</p>
+        </div>
+    </section>
+
+    <!-- Contact Content -->
+    <section class="contact-section">
+        <div class="container">
+            <div class="contact-layout">
+                <!-- Left: Contact Form -->
+                <div class="contact-form-card">
+                    <h2 class="booking-card-title">Send Us a Message</h2>
+
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type == 'error' ? 'danger' : 'success' }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <form method="POST" action="{{ path('contact_index') }}">
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="contactName">Full Name</label>
+                                <input type="text" id="contactName" name="contact_name" placeholder="Enter your full name" required>
+                            </div>
+                        </div>
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="contactEmail">Email Address</label>
+                                <input type="email" id="contactEmail" name="contact_email" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="contactPhone">Phone Number</label>
+                                <input type="tel" id="contactPhone" name="contact_phone" placeholder="+63 XXX XXX XXXX">
+                            </div>
+                        </div>
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="contactSubject">Subject</label>
+                                <select id="contactSubject" name="contact_subject">
+                                    <option value="general">General Inquiry</option>
+                                    <option value="reservation">Reservation</option>
+                                    <option value="events">Events &amp; Celebrations</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="contactMessage">Message</label>
+                                <textarea id="contactMessage" name="contact_message" rows="5" placeholder="Write your message here..." required style="width:100%;border:none;outline:none;font-family:var(--font-body);font-size:0.88rem;color:var(--color-text-dark);background:transparent;resize:vertical;"></textarea>
+                            </div>
+                        </div>
+                        <button type="submit" name="send_message" class="btn-confirm-booking">Send Message &rarr;</button>
+                    </form>
+                </div>
+
+                <!-- Right: Contact Info Cards -->
+                <div class="contact-info-column">
+                    <div class="contact-info-card">
+                        <span class="contact-info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><path d="m9 10 2 2 4-4"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="contact-info-label">Address</h4>
+                            <p>Tambisan, Siquijor, Philippines</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <span class="contact-info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="contact-info-label">Phone</h4>
+                            <p>+63 912 345 6789</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <span class="contact-info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="contact-info-label">Email</h4>
+                            <p>reservations@ejercitosunscape.ph</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <span class="contact-info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="contact-info-label">Website</h4>
+                            <p>www.ejercitosunscape.ph</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-card">
+                        <span class="contact-info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                        </span>
+                        <div>
+                            <h4 class="contact-info-label">Hours</h4>
+                            <p>Front Desk: 24/7<br>Reservations: 8:00 AM – 8:00 PM</p>
+                        </div>
+                    </div>
+
+                    <!-- Social -->
+                    <div class="contact-social-row">
+                        <span class="booking-field-label">Follow Us on Social Media</span>
+                        <div class="contact-social-buttons">
+                            <a href="#" class="contact-social-btn" aria-label="Facebook">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                            </a>
+                            <a href="#" class="contact-social-btn" aria-label="Instagram">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                            </a>
+                            <a href="#" class="contact-social-btn" aria-label="Twitter">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

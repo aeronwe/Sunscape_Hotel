@@ -1,0 +1,230 @@
+/* Dining Page Styles */
+/* ============================================
+   DINING VENUES (Alternating Rows)
+   ============================================ */
+.dining-venues-section {
+    padding: 50px 0 60px;
+}
+
+.dining-venue-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 36px;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease;
+}
+
+.dining-venue-row:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.dining-venue-row:last-child {
+    margin-bottom: 0;
+}
+
+.dining-venue-image {
+    position: relative;
+    min-height: 320px;
+    overflow: hidden;
+    background: var(--color-sage-dark);
+}
+
+.dining-venue-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.dining-venue-row:hover .dining-venue-image img {
+    transform: scale(1.04);
+}
+
+.dining-venue-content {
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.dining-venue-tag {
+    display: inline-block;
+    padding: 5px 16px;
+    background: var(--color-sage-light);
+    border: 1px solid var(--color-sage-dark);
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-forest);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    align-self: flex-start;
+}
+
+.dining-venue-name {
+    font-family: var(--font-body);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-bottom: 10px;
+}
+
+.dining-venue-desc {
+    font-size: 0.88rem;
+    color: var(--color-text-medium);
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.dining-venue-hours {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--color-text-medium);
+    margin-bottom: 22px;
+}
+
+.dining-venue-hours svg {
+    flex-shrink: 0;
+    color: var(--color-text-light);
+}
+
+.btn-view-menu {
+    display: inline-block;
+    padding: 11px 24px;
+    background: var(--color-forest);
+    color: var(--color-cream);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+}
+
+.btn-view-menu:hover {
+    background: var(--color-forest-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(43, 58, 43, 0.3);
+}
+
+/* Reversed row (content left, image right) */
+.dining-venue-row--reversed .dining-venue-image {
+    order: 2;
+}
+
+.dining-venue-row--reversed .dining-venue-content {
+    order: 1;
+}
+
+/* ============================================
+   IN-ROOM DINING BANNER
+   ============================================ */
+.inroom-dining-banner {
+    background: var(--color-forest-dark);
+    padding: 28px 0;
+}
+
+.inroom-dining-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.inroom-dining-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.inroom-dining-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(196, 162, 78, 0.15);
+    color: var(--color-gold);
+    flex-shrink: 0;
+}
+
+.inroom-dining-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke: var(--color-gold);
+}
+
+.inroom-dining-inner h3 {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-cream);
+    margin-bottom: 3px;
+}
+
+.inroom-dining-inner p {
+    font-size: 0.82rem;
+    color: rgba(244, 239, 228, 0.65);
+    line-height: 1.5;
+}
+
+.btn-order-now {
+    display: inline-block;
+    padding: 12px 28px;
+    background: var(--color-gold);
+    color: var(--color-forest-dark);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.btn-order-now:hover {
+    background: var(--color-gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(196, 162, 78, 0.4);
+}
+
+
+
+/* ---------- Dining Responsive Media Queries ---------- */
+@media (max-width: 900px) {
+    .dining-venue-row {
+        grid-template-columns: 1fr;
+    }
+    .dining-venue-image {
+        min-height: 240px;
+    }
+    .dining-venue-row--reversed .dining-venue-image {
+        order: 0;
+    }
+    .dining-venue-row--reversed .dining-venue-content {
+        order: 1;
+    }
+    .dining-venue-content {
+        padding: 28px 24px;
+    }
+    .inroom-dining-inner {
+        flex-direction: column;
+        text-align: center;
+        align-items: center;
+    }
+    .inroom-dining-left {
+        flex-direction: column;
+        text-align: center;
+    }
+}

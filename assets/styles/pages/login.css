@@ -1,0 +1,566 @@
+/* Auth Login Page Styles */
+/* ============================================
+   AUTH PAGES (Login / Signup)
+   ============================================ */
+
+/* ---------- auth page body override ---------- */
+.auth-body > .navbar,
+.auth-body > .footer {
+    display: none;
+}
+
+.auth-body {
+    font-family: 'Manrope', sans-serif;
+    background: radial-gradient(circle at 50% 30%, #46583A 0%, #2A3522 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    color: #262E1F;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ---------- decorative palm trees ---------- */
+.auth-bg-palm {
+    position: fixed;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.06;
+    color: #9AB87A;
+    filter: blur(1px);
+}
+
+.auth-bg-palm--left {
+    width: 380px;
+    left: -60px;
+    bottom: -40px;
+    transform: rotate(8deg);
+}
+
+.auth-bg-palm--right {
+    width: 340px;
+    right: -50px;
+    top: -20px;
+    transform: rotate(-12deg) scaleX(-1);
+}
+
+.auth-bg-palm--center-left {
+    width: 260px;
+    left: 8%;
+    top: 5%;
+    transform: rotate(15deg);
+    opacity: 0.035;
+}
+
+.auth-bg-palm--center-right {
+    width: 280px;
+    right: 5%;
+    bottom: 8%;
+    transform: rotate(-5deg) scaleX(-1);
+    opacity: 0.04;
+}
+
+/* ---------- grain texture ---------- */
+.auth-grain-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.auth-grain-overlay {
+    position: fixed;
+    inset: 0;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    filter: url(#authGrainFilter);
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* ---------- card ---------- */
+.auth-page-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 1;
+    position: relative;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 980px;
+    display: flex;
+    flex-direction: column;
+    background: #F3EEE0;
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: 0 40px 70px rgba(30, 38, 22, 0.35), 0 8px 24px rgba(0, 0, 0, 0.15);
+    animation: authRiseIn 0.8s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+@keyframes authRiseIn {
+    from {
+        opacity: 0;
+        transform: translateY(26px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-card-body {
+    display: flex;
+    flex: 1;
+    min-height: 600px;
+}
+
+/* ---------- left panel : branding ---------- */
+.auth-panel-brand {
+    flex: 0 0 42%;
+    background: #F3EEE0;
+    color: #34432A;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 34px;
+    position: relative;
+    border-right: 1px solid #E2D3AC;
+}
+
+.auth-resort-logo {
+    width: 180px;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
+}
+
+.auth-hotel-name {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 5px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    color: #34432A;
+}
+
+.auth-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: #6B7F52;
+    max-width: 260px;
+    line-height: 1.4;
+}
+
+.auth-wave {
+    width: 100%;
+    max-width: 260px;
+    margin: 24px 0;
+    opacity: 0.5;
+}
+
+.auth-greek-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: #34432A;
+    opacity: 0.85;
+}
+
+.auth-greek-line-sub {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #6B7F52;
+    opacity: 0.75;
+    margin-top: 6px;
+}
+
+/* ---------- right panel : form ---------- */
+.auth-panel-form {
+    flex: 1;
+    padding: 48px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+/* ---------- tabs (for switch links styled as tabs) ---------- */
+.auth-tabs {
+    position: relative;
+    display: flex;
+    background: rgba(226, 211, 172, 0.4);
+    border-radius: 50px;
+    padding: 5px;
+    margin-bottom: 34px;
+}
+
+.auth-tab {
+    flex: 1;
+    position: relative;
+    z-index: 2;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: #34432A;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: color 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-tab.active {
+    color: #F3EEE0;
+}
+
+.auth-tab-indicator {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: calc(50% - 5px);
+    height: calc(100% - 10px);
+    background: #34432A;
+    border-radius: 50px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+}
+
+.auth-tab-indicator.to-signup {
+    transform: translateX(100%);
+}
+
+/* ---------- form ---------- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    animation: authFadeInUp 0.45s ease both;
+}
+
+@keyframes authFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-form h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #34432A;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+.auth-form-sub {
+    font-size: 0.9rem;
+    color: #6B7F52;
+    margin-top: -11px;
+}
+
+/* ---------- input groups ---------- */
+.auth-input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #6B7F52;
+    margin-bottom: 7px;
+    font-family: 'Manrope', sans-serif;
+}
+
+.auth-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-input-icon {
+    position: absolute;
+    left: 14px;
+    width: 17px;
+    height: 17px;
+    color: #6B7F52;
+    pointer-events: none;
+}
+
+.auth-input-wrap input {
+    width: 100%;
+    padding: 13px 14px 13px 42px;
+    border: 1.5px solid #E2D3AC;
+    border-radius: 12px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.95rem;
+    color: #262E1F;
+    background: #FBF8F1;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.auth-input-wrap input::placeholder {
+    color: #A8A08C;
+}
+
+.auth-input-wrap input:focus {
+    outline: none;
+    border-color: #6B7F52;
+    box-shadow: 0 0 0 4px rgba(107, 127, 82, 0.15);
+}
+
+.auth-input-wrap input:focus-visible {
+    outline: none;
+}
+
+/* ---------- name row (first + last) ---------- */
+.auth-name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* ---------- password toggle ---------- */
+.auth-toggle-pw {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    color: #6B7F52;
+}
+
+.auth-toggle-pw svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* ---------- form row (remember me + forgot) ---------- */
+.auth-form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.auth-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #6B7F52;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.85rem;
+}
+
+.auth-checkbox input {
+    accent-color: #34432A;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+.auth-link-muted {
+    color: #34432A;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.auth-link-muted:hover {
+    text-decoration: underline;
+}
+
+/* ---------- errors ---------- */
+.auth-error-text {
+    color: #A14B3A;
+    font-size: 0.82rem;
+    background: rgba(161, 75, 58, 0.08);
+    border: 1px solid rgba(161, 75, 58, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 4px;
+}
+
+.auth-error-text ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.auth-error-text li {
+    padding: 2px 0;
+}
+
+.auth-error-text p {
+    margin: 2px 0;
+}
+
+.auth-pw-error {
+    color: #A14B3A;
+    font-size: 0.82rem;
+    display: none;
+    margin-top: -8px;
+}
+
+.auth-pw-error.show {
+    display: block;
+}
+
+/* ---------- flash messages ---------- */
+.auth-flash {
+    font-size: 0.88rem;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+}
+
+.auth-flash-success {
+    background: rgba(107, 127, 82, 0.12);
+    border: 1px solid rgba(107, 127, 82, 0.3);
+    color: #34432A;
+}
+
+.auth-flash-error {
+    background: rgba(161, 75, 58, 0.08);
+    border: 1px solid rgba(161, 75, 58, 0.2);
+    color: #A14B3A;
+}
+
+/* ---------- primary button ---------- */
+.auth-btn-primary {
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #34432A;
+    color: #F3EEE0;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.98rem;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    width: 100%;
+}
+
+.auth-btn-primary:hover {
+    background: #6B7F52;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(52, 67, 42, 0.3);
+}
+
+.auth-btn-primary:active {
+    transform: translateY(0);
+}
+
+/* ---------- switch text ---------- */
+.auth-switch-text {
+    text-align: center;
+    font-size: 0.87rem;
+    color: #6B7F52;
+    margin-top: 4px;
+}
+
+.auth-switch-text a {
+    color: #34432A;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-switch-text a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- accessibility ---------- */
+.auth-body a:focus-visible,
+.auth-body button:focus-visible,
+.auth-body input:focus-visible {
+    outline: 2px solid #6B7F52;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .auth-card,
+    .auth-form {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 860px) {
+    .auth-body {
+        padding: 32px 20px;
+    }
+
+    .auth-card-body {
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .auth-panel-brand {
+        padding: 38px 28px;
+        border-right: none;
+        border-bottom: 1px solid #E2D3AC;
+    }
+
+    .auth-resort-logo {
+        width: 140px;
+        margin-bottom: 14px;
+    }
+
+    .auth-panel-form {
+        padding: 38px 28px 44px;
+    }
+
+    .auth-name-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 420px) {
+    .auth-body {
+        padding: 16px 12px;
+    }
+
+    .auth-hotel-name {
+        font-size: 1.1rem;
+        letter-spacing: 3px;
+    }
+
+    .auth-resort-logo {
+        width: 120px;
+    }
+
+    .auth-panel-brand {
+        padding: 32px 20px;
+    }
+
+    .auth-panel-form {
+        padding: 32px 20px 40px;
+    }
+}

@@ -1,0 +1,131 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ room.name }} | Ejercito's Sunscape Resort{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/room-detail.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+    <!-- Breadcrumb -->
+    <div class="rd-breadcrumb-bar">
+        <div class="container">
+            <p class="booking-breadcrumb">
+                <a href="{{ path('home') }}">Home</a> &gt; <a href="{{ path('room_index') }}">Rooms &amp; Suites</a> &gt; {{ room.name }}
+            </p>
+        </div>
+    </div>
+
+    <!-- Image Gallery -->
+    <section class="rd-gallery-section">
+        <div class="container">
+            <div class="rd-gallery">
+                <div class="rd-gallery-main">
+                    {% set firstImg = room.images[0] starts with 'http' ? room.images[0] : asset(room.images[0]) %}
+                    <img src="{{ firstImg }}" alt="{{ room.name }} — Main Image" id="rdMainImage">
+                </div>
+                <div class="rd-gallery-thumbs">
+                    {% for i, img in room.images %}
+                        {% set thumbImg = img starts with 'http' ? img : asset(img) %}
+                        <div class="rd-thumb {{ loop.first ? 'rd-thumb-active' : '' }}" onclick="changeMainImage('{{ thumbImg }}', this)">
+                            <img src="{{ thumbImg }}" alt="View {{ loop.index }}" loading="lazy">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Room Detail Content -->
+    <section class="rd-content-section">
+        <div class="container">
+            <div class="rd-layout">
+                <!-- Left: Room Info -->
+                <div class="rd-info-column">
+                    <span class="room-badge {{ room.badge_class }}">{{ room.badge }}</span>
+                    <h1 class="rd-room-name">{{ room.name }}</h1>
+                    <p class="rd-room-specs">{{ room.sqm }} sqm · Up to {{ room.guests }} Guests · {{ room.beds }}</p>
+                    <p class="rd-room-desc">{{ room.description }}</p>
+
+                    <!-- Room Amenities -->
+                    <h2 class="rd-section-heading">Room Amenities</h2>
+                    <div class="rd-amenities-grid">
+                        {% for amenity in room.amenities %}
+                            <div class="rd-amenity">
+                                <span class="rd-amenity-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+                                </span>
+                                <span>{{ amenity }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Hotel Policies -->
+                    <h2 class="rd-section-heading">Hotel Policies</h2>
+                    <ul class="rd-policies">
+                        <li>
+                            <span class="rd-policy-icon"><svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/></svg></span>
+                            <span>Check-in: 2:00 PM</span>
+                        </li>
+                        <li>
+                            <span class="rd-policy-icon"><svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z"/></svg></span>
+                            <span>Check-out: 12:00 PM</span>
+                        </li>
+                        <li>
+                            <span class="rd-policy-icon"><svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg></span>
+                            <span>Free cancellation up to 48 hours before check-in.</span>
+                        </li>
+                        <li>
+                            <span class="rd-policy-icon"><svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg></span>
+                            <span>Children under 6 stay free. Extra bed for children 6-12 at ₱800/night.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Right: Price & Booking Widget -->
+                <div class="rd-booking-column">
+                    <div class="rd-price-card">
+                        <div class="rd-price-display">
+                            <span class="rd-price-amount">₱{{ room.price|number_format(0) }}</span>
+                            <span class="rd-price-label">per night</span>
+                        </div>
+                        <a href="{{ path('booking_index') }}" class="btn-confirm-booking" id="rdBookBtn">Book This Room →</a>
+                        <p class="summary-cancel-note"><svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 -960 960 960" width="16" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg> Free cancellation up to 48 hours before check-in.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guest Testimonials -->
+    <section class="rd-testimonials-section">
+        <div class="container">
+            <h2 class="rd-section-heading" style="margin-top: 0;">Guest Testimonials</h2>
+            <p class="rd-testimonials-sub">What Our Guests Say</p>
+            <div class="rd-testimonials-grid">
+                {% for t in testimonials %}
+                    <div class="rd-testimonial-card">
+                        <p class="rd-testimonial-text">"{{ t.text }}"<br>- {{ t.name }}</p>
+                        <div class="rd-testimonial-stars">{% for s in 1..t.stars %}★{% endfor %}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+function changeMainImage(src, thumb) {
+    var main = document.getElementById('rdMainImage');
+    if (!main) return;
+    main.src = src;
+    document.querySelectorAll('.rd-thumb').forEach(function(t) {
+        t.classList.remove('rd-thumb-active');
+    });
+    if (thumb) {
+        thumb.classList.add('rd-thumb-active');
+    }
+}
+</script>
+{% endblock %}

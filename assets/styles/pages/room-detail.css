@@ -1,0 +1,425 @@
+/* Room Detail Page Styles */
+/* ============================================
+   ROOM DETAIL PAGE
+   ============================================ */
+
+/* Breadcrumb Bar */
+.rd-breadcrumb-bar {
+    background: var(--color-forest);
+    padding: 32px 24px 28px;
+}
+
+.rd-breadcrumb-bar .booking-breadcrumb {
+    margin: 0;
+    color: rgba(244, 239, 228, 0.72);
+    font-size: 0.82rem;
+}
+
+.rd-breadcrumb-bar .booking-breadcrumb a {
+    color: rgba(244, 239, 228, 0.58);
+    transition: color 0.3s ease;
+}
+
+.rd-breadcrumb-bar .booking-breadcrumb a:hover {
+    color: var(--color-gold-light);
+}
+
+/* Image Gallery */
+.rd-gallery-section {
+    padding: 36px 0 0;
+}
+
+.rd-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rd-gallery-main {
+    width: 100%;
+    height: 440px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--color-sage-dark);
+}
+
+.rd-gallery-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease;
+}
+
+.rd-gallery-thumbs {
+    display: flex;
+    gap: 10px;
+}
+
+.rd-thumb {
+    flex: 1;
+    height: 90px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease, opacity 0.3s ease;
+    opacity: 0.6;
+}
+
+.rd-thumb:hover {
+    opacity: 0.85;
+}
+
+.rd-thumb-active {
+    border-color: var(--color-gold);
+    opacity: 1;
+}
+
+.rd-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Content Section */
+.rd-content-section {
+    padding: 40px 0 60px;
+}
+
+.rd-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* Left Column — Room Info */
+.rd-info-column .room-badge {
+    margin-bottom: 12px;
+}
+
+.rd-room-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: var(--color-forest-dark);
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    line-height: 1.25;
+}
+
+.rd-room-specs {
+    font-size: 0.88rem;
+    color: var(--color-text-medium);
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.rd-room-desc {
+    font-size: 0.92rem;
+    color: var(--color-text-medium);
+    line-height: 1.8;
+    margin-bottom: 32px;
+}
+
+.rd-section-heading {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-bottom: 16px;
+    margin-top: 32px;
+}
+
+/* Amenities Grid */
+.rd-amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.rd-amenity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--color-text-medium);
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.rd-amenity:hover {
+    background: var(--color-sage-light);
+    border-color: var(--color-sage-dark);
+}
+
+.rd-amenity-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gold-dark);
+    flex-shrink: 0;
+    transition: color 0.2s ease;
+}
+
+.rd-amenity-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.rd-amenity:hover .rd-amenity-icon {
+    color: var(--color-forest);
+}
+
+.rd-amenity:hover .rd-amenity-icon svg {
+    transform: scale(1.1);
+}
+
+/* Hotel Policies */
+.rd-policies {
+    list-style: none;
+    padding: 0;
+}
+
+.rd-policies li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.88rem;
+    color: var(--color-text-medium);
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-cream-dark);
+    line-height: 1.5;
+}
+
+.rd-policies li:last-child {
+    border-bottom: none;
+}
+
+.rd-policy-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gold-dark);
+    flex-shrink: 0;
+}
+
+.rd-policy-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    display: block;
+}
+
+/* Right Column — Price Card */
+.rd-booking-column {
+    position: sticky;
+    top: 140px;
+    align-self: start;
+}
+
+.rd-price-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    box-shadow: var(--shadow-md);
+}
+
+.rd-price-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.rd-price-amount {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-forest-dark);
+}
+
+.rd-price-label {
+    font-size: 0.82rem;
+    color: var(--color-text-light);
+    margin-left: 4px;
+}
+
+.rd-booking-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.rd-price-breakdown {
+    border-top: 1px solid var(--color-border);
+    padding-top: 16px;
+    margin-bottom: 20px;
+}
+
+.rd-price-card .btn-confirm-booking {
+    text-decoration: none;
+}
+
+.rd-price-card .summary-cancel-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 14px 0 0;
+    color: var(--color-text-light);
+    font-size: 0.78rem;
+    line-height: 1.5;
+}
+
+.rd-price-card .summary-cancel-note svg {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    color: var(--color-gold-dark);
+}
+
+/* Testimonials */
+.rd-testimonials-section {
+    padding: 50px 0 70px;
+    background: var(--color-white);
+    border-top: 1px solid var(--color-border);
+}
+
+.rd-testimonials-sub {
+    font-size: 0.88rem;
+    color: var(--color-text-light);
+    margin-bottom: 28px;
+}
+
+.rd-testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.rd-testimonial-card {
+    background: var(--color-cream);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 24px 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rd-testimonial-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.rd-testimonial-text {
+    font-size: 0.85rem;
+    color: var(--color-text-medium);
+    line-height: 1.7;
+    font-style: italic;
+    margin-bottom: 12px;
+}
+
+.rd-testimonial-stars {
+    color: var(--color-gold);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+}
+
+/* Room Detail Responsive */
+@media (max-width: 900px) {
+    .rd-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .rd-booking-column {
+        position: static;
+    }
+
+    .rd-gallery-main {
+        height: 300px;
+    }
+
+    .rd-thumb {
+        height: 65px;
+    }
+
+    .rd-testimonials-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .rd-amenities-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .rd-gallery-main {
+        height: 220px;
+    }
+
+    .rd-thumb {
+        height: 52px;
+    }
+
+    .rd-testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rd-amenities-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rd-room-name {
+        font-size: 1.4rem;
+    }
+
+    .room-page-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .rd-gallery-main {
+        height: 210px;
+    }
+
+    .rd-gallery-thumbs {
+        overflow-x: auto;
+        padding-bottom: 3px;
+    }
+
+    .rd-thumb {
+        flex: 0 0 84px;
+        height: 58px;
+    }
+
+    .rd-content-section {
+        padding-top: 28px;
+    }
+
+    .rd-price-card {
+        padding: 22px 18px;
+    }
+
+    .rd-amenities-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .rd-testimonial-card {
+        padding: 20px 16px;
+    }
+}
+

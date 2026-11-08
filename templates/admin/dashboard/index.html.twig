@@ -1,0 +1,96 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Dashboard | Admin Panel{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Total Rooms</div>
+            <div class="stat-value">{{ stats.total_rooms }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Total Reservations</div>
+            <div class="stat-value">{{ stats.total_reservations }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Pending</div>
+            <div class="stat-value">{{ stats.pending_reservations }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Revenue</div>
+            <div class="stat-value">₱{{ stats.total_revenue|number_format(0, '.', ',') }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Stats -->
+<div class="stats-grid" style="margin-bottom: 36px;">
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Registered Guests</div>
+            <div class="stat-value">{{ stats.total_guests }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Today's Check-ins</div>
+            <div class="stat-value">{{ stats.today_checkins }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Services</div>
+            <div class="stat-value">{{ stats.total_services }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Reservations -->
+<div class="admin-panel">
+    <div class="panel-header">
+        <h2 class="panel-title">Recent Reservations</h2>
+        <a href="{{ path('admin_reservations') }}" class="admin-btn admin-btn-outline">View All &rarr;</a>
+    </div>
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Guest</th>
+                    <th>Room</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if recentReservations is empty %}
+                    <tr><td colspan="7" style="text-align:center; padding: 40px; color: var(--admin-text-dim);">No reservations yet</td></tr>
+                {% else %}
+                    {% for res in recentReservations %}
+                        <tr>
+                            <td class="td-primary">#{{ res.id }}</td>
+                            <td class="td-primary">{{ res.fullName }}</td>
+                            <td>{{ res.roomType }}</td>
+                            <td>{{ res.checkinDate ? res.checkinDate|date('M d, Y') : '' }}</td>
+                            <td>{{ res.checkoutDate ? res.checkoutDate|date('M d, Y') : '' }}</td>
+                            <td>₱{{ res.totalAmount|number_format(0, '.', ',') }}</td>
+                            <td><span class="status-badge status-{{ res.status }}">{{ res.status }}</span></td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

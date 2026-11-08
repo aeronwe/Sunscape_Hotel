@@ -1,0 +1,249 @@
+/* Experiences Page Styles */
+/* ============================================
+   EXPERIENCES PAGE
+   ============================================ */
+.exp-section {
+    padding: 48px 0 60px;
+}
+
+.exp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-top: 28px;
+}
+
+.exp-card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+}
+
+.exp-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.exp-card-image {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    background: var(--color-sage-dark);
+}
+
+.exp-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.exp-card:hover .exp-card-image img {
+    transform: scale(1.05);
+}
+
+.exp-duration-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    padding: 5px 14px;
+    background: var(--color-forest);
+    color: var(--color-cream);
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.exp-card-content {
+    padding: 22px;
+}
+
+.exp-card-name {
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    margin-bottom: 6px;
+}
+
+.exp-card-desc {
+    font-size: 0.84rem;
+    color: var(--color-text-medium);
+    line-height: 1.65;
+    margin-bottom: 16px;
+}
+
+.exp-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.exp-card-price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-forest);
+}
+
+.exp-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-exp-details {
+    display: inline-block;
+    padding: 8px 16px;
+    background: transparent;
+    color: var(--color-forest);
+    border: 1.5px solid var(--color-forest);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-exp-details:hover {
+    background: var(--color-forest);
+    color: var(--color-cream);
+}
+
+.btn-exp-book {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--color-forest);
+    color: var(--color-cream);
+    border: 1.5px solid var(--color-forest);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-exp-book:hover {
+    background: var(--color-forest-dark);
+    border-color: var(--color-forest-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(43, 58, 43, 0.25);
+}
+
+/* Amenities Section */
+.amenities-section {
+    padding: 60px 0 80px;
+    background: var(--color-cream-dark);
+}
+
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    margin-top: 12px;
+}
+
+.amenity-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    padding: 24px 16px;
+    transition: transform 0.3s ease;
+}
+
+.amenity-item:hover {
+    transform: translateY(-4px);
+}
+
+.amenity-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    border: 1px solid var(--color-gold-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.amenity-item:hover .amenity-icon {
+    background: var(--color-gold-dark);
+    border-color: var(--color-gold-dark);
+    transform: scale(1.06);
+}
+
+.amenity-icon svg {
+    width: 28px;
+    height: 28px;
+    max-width: 28px;
+    max-height: 28px;
+    display: block;
+    margin: 0 auto;
+}
+
+.amenity-icon svg,
+.amenity-icon svg path {
+    fill: var(--color-cream) !important;
+}
+
+.amenity-name {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-text-dark);
+    letter-spacing: 0.3px;
+}
+
+.inner-footer {
+    margin-top: 0;
+}
+
+
+/* ---------- Experiences Responsive Media Queries ---------- */
+@media (max-width: 960px) {
+    .exp-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    .amenities-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .amenities-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    .amenity-item {
+        padding: 16px 10px;
+    }
+    .exp-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .exp-card-actions {
+        width: 100%;
+    }
+    .btn-exp-details,
+    .btn-exp-book {
+        flex: 1;
+        text-align: center;
+    }
+}

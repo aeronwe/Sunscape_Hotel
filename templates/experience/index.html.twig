@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Experiences &amp; Activities | Ejercito's Sunscape Resort{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/experiences.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+    <section class="inner-hero">
+        <p class="section-label">Island Activities</p>
+        <h1>Experiences &amp; Activities</h1>
+        <p>Discover the magic of Siquijor adventures and memories for every kind of traveler.</p>
+    </section>
+
+    <!-- Curated Experiences -->
+    <section class="exp-section">
+        <div class="container">
+            <p class="section-label" style="color: var(--color-text-medium);">Curated Island Experiences</p>
+
+            <div class="exp-grid">
+                {% for exp in experiences %}
+                    <div class="exp-card">
+                        <div class="exp-card-image">
+                            <span class="exp-duration-badge">{{ exp.duration }}</span>
+                            <img src="{{ asset(exp.image) }}" alt="{{ exp.name }}" loading="lazy">
+                        </div>
+                        <div class="exp-card-content">
+                            <h3 class="exp-card-name">{{ exp.name }}</h3>
+                            <p class="exp-card-desc">{{ exp.description }}</p>
+                            <div class="exp-card-footer">
+                                {% if exp.price is not null and exp.price is defined and exp.price > 0 %}
+                                    <span class="exp-card-price">₱{{ exp.price|number_format(0) }} <small>/ person</small></span>
+                                    <div class="exp-card-actions">
+                                        {% if exp.page is defined and exp.page %}
+                                            <a href="{{ path(exp.page) }}" class="btn-exp-details">Details</a>
+                                        {% endif %}
+                                        <a href="{{ path('booking_index') }}" class="btn-exp-book">Book Now &rarr;</a>
+                                    </div>
+                                {% else %}
+                                    <span class="exp-card-price" style="font-size: 0.88rem; color: var(--color-text-medium); font-weight: 500;">Custom Rates</span>
+                                    <div class="exp-card-actions">
+                                        {% if exp.page is defined and exp.page %}
+                                            <a href="{{ path(exp.page) }}" class="btn-exp-details">Details</a>
+                                        {% endif %}
+                                        <a href="{{ path('contact_index') }}" class="btn-exp-book">Contact Us &rarr;</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Resort Amenities -->
+    <section class="amenities-section">
+        <div class="container">
+            <p class="section-label" style="color: var(--color-text-medium);">Resort Amenities</p>
+            <h2 class="section-title">Everything Included in Your Stay</h2>
+
+            <div class="amenities-grid">
+                {% for amenity in amenities %}
+                    <div class="amenity-item">
+                        <div class="amenity-icon">{{ amenity.icon|raw }}</div>
+                        <span class="amenity-name">{{ amenity.name }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

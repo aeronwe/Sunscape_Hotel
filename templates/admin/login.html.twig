@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin Login | Ejercito's Sunscape Resort</title>
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+</head>
+<body class="admin-body">
+
+<div class="admin-login-page">
+    <div class="admin-login-card">
+        <div class="admin-login-logo">
+            <img src="{{ asset('images/LGO.svg') }}" alt="Ejercito's Sunscape Resort">
+        </div>
+        <h1>Staff &amp; Management</h1>
+        <p class="login-subtitle">Ejercito's Sunscape Resort &middot; Siquijor Island</p>
+
+        {% if error %}
+            <div class="admin-login-error">
+                <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            </div>
+        {% endif %}
+
+        <form class="admin-login-form" method="POST" action="{{ path('admin_login') }}">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <div class="form-group">
+                <label for="adminEmail">Username / Email Address</label>
+                <input type="text" id="adminEmail" name="email" placeholder="Enter username / email" value="{{ last_username }}" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" name="password" placeholder="Enter admin password" required>
+            </div>
+            <button type="submit" class="admin-login-btn">Sign In to Dashboard</button>
+        </form>
+
+        <a href="{{ path('home') }}" class="admin-login-back">&larr; Back to Resort Website</a>
+    </div>
+</div>
+
+</body>
+</html>

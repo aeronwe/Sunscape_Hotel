@@ -1,0 +1,332 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Make a Reservation | {{ resortName }}{% endblock %}
+
+{% block body_class %}inner-page{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/pages/booking.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+    <!-- Page Header -->
+    <section class="booking-page-header">
+        <div class="container">
+            <h1>Make a Reservation</h1>
+            <p class="booking-breadcrumb"><a href="{{ path('home') }}">Home</a> &gt; Booking</p>
+        </div>
+    </section>
+
+    <!-- Booking Content -->
+    <section class="booking-page-section">
+        <div class="container">
+            <div class="booking-layout">
+
+                <!-- LEFT COLUMN: Form -->
+                <div class="booking-form-column">
+
+                    <!-- Book Your Stay -->
+                    <div class="booking-card">
+                        <h2 class="booking-card-title">Book Your Stay</h2>
+
+                        <!-- Dates -->
+                        <div class="booking-field-group">
+                            <label class="booking-field-label">Dates</label>
+                            <div class="booking-field-row">
+                                <div class="booking-field-outlined">
+                                    <label for="bookCheckin">Check-In</label>
+                                    <input type="date" id="bookCheckin" name="checkin" value="{{ prefillCheckin }}" placeholder="Select Date">
+                                </div>
+                                <div class="booking-field-outlined">
+                                    <label for="bookCheckout">Check-Out</label>
+                                    <input type="date" id="bookCheckout" name="checkout" value="{{ prefillCheckout }}" placeholder="Select Date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Guests -->
+                        <div class="booking-field-group">
+                            <label class="booking-field-label">Guests</label>
+                            <div class="booking-field-row">
+                                <div class="booking-field-outlined">
+                                    <label for="bookAdults">Adults</label>
+                                    <select id="bookAdults" name="adults">
+                                        <option value="1" {{ prefillAdults == 1 ? 'selected' : '' }}>1 Adult</option>
+                                        <option value="2" {{ prefillAdults == 2 ? 'selected' : '' }}>2 Adults</option>
+                                        <option value="3" {{ prefillAdults == 3 ? 'selected' : '' }}>3 Adults</option>
+                                        <option value="4" {{ prefillAdults == 4 ? 'selected' : '' }}>4 Adults</option>
+                                    </select>
+                                </div>
+                                <div class="booking-field-outlined">
+                                    <label for="bookChildren">Children</label>
+                                    <select id="bookChildren" name="children">
+                                        <option value="0" selected>0 Children</option>
+                                        <option value="1">1 Child</option>
+                                        <option value="2">2 Children</option>
+                                        <option value="3">3 Children</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Room Type -->
+                        <div class="booking-field-group">
+                            <label class="booking-field-label">Room Type</label>
+                            <div class="booking-field-outlined">
+                                <label for="bookRoomType">Select Room Type</label>
+                                <select id="bookRoomType" name="room_type">
+                                    <option value="" disabled {{ roomTypeIndex is same as(false) ? 'selected' : '' }}>Choose from {{ rooms|length }} options ›</option>
+                                    {% for i, room in rooms %}
+                                        <option value="{{ i }}" {{ roomTypeIndex is same as(i) ? 'selected' : '' }} data-id="{{ room.id }}" data-price="{{ room.price }}" data-name="{{ room.name }}" data-badge="{{ room.badge }}" data-image="{{ room.image starts with 'http' ? room.image : asset(room.image) }}">{{ room.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Room options list preview -->
+                            <div class="room-options-list">
+                                {% for room in rooms %}
+                                    <div class="room-option-item">
+                                        <span class="room-option-name">{{ room.name }}</span>
+                                        <span class="room-option-price">₱{{ room.price|number_format(0) }}/night</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Curated Experiences & Add-ons -->
+                    <div class="booking-card" id="experiencesCard">
+                        <div class="booking-card-header-flex">
+                            <div>
+                                <h2 class="booking-card-title">Resort Experiences &amp; Add-ons</h2>
+                                <p class="booking-card-subtitle">Enhance your stay with our signature island tours and dining experiences.</p>
+                            </div>
+                            <span class="booking-exp-badge-optional">Optional Add-ons</span>
+                        </div>
+
+                        <div class="booking-experiences-list">
+                            {% for exp in experiences %}
+                                {% set isPrechecked = prefillExperience != '' and (prefillExperience == exp.id or prefillExperience in exp.id or exp.id in prefillExperience) %}
+                                <div class="booking-exp-item {{ isPrechecked ? 'selected' : '' }}" id="expItem_{{ exp.id }}" data-exp-id="{{ exp.id }}">
+                                    <label class="booking-exp-checkbox-label" for="expCheckbox_{{ exp.id }}">
+                                        <input type="checkbox" 
+                                               name="experiences[]" 
+                                               value="{{ exp.id }}" 
+                                               class="booking-exp-checkbox" 
+                                               id="expCheckbox_{{ exp.id }}"
+                                               data-id="{{ exp.id }}"
+                                               data-name="{{ exp.name }}"
+                                               data-price="{{ exp.price }}"
+                                               {{ isPrechecked ? 'checked' : '' }}>
+                                        <span class="booking-exp-custom-check" aria-hidden="true">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                        </span>
+                                    </label>
+
+                                    <div class="booking-exp-thumb">
+                                        <img src="{{ exp.image starts with 'http' ? exp.image : asset(exp.image) }}" alt="{{ exp.name }}" loading="lazy">
+                                    </div>
+
+                                    <div class="booking-exp-details">
+                                        <div class="booking-exp-header">
+                                            <h3 class="booking-exp-name">{{ exp.name }}</h3>
+                                            <span class="booking-exp-duration">{{ exp.badge }}</span>
+                                        </div>
+                                        <p class="booking-exp-desc">{{ exp.description }}</p>
+                                        
+                                        <div class="booking-exp-controls">
+                                            <div class="booking-exp-price-tag">
+                                                <span class="exp-unit-price">₱{{ exp.price|number_format(0) }}</span>
+                                                <span class="exp-unit-label">/ guest</span>
+                                            </div>
+
+                                            <div class="booking-exp-guest-selector" id="guestSelector_{{ exp.id }}" style="{{ isPrechecked ? '' : 'display: none;' }}">
+                                                <label for="expGuests_{{ exp.id }}">Guests:</label>
+                                                <select id="expGuests_{{ exp.id }}" class="exp-guests-select" data-id="{{ exp.id }}">
+                                                    {% for g in 1..max(4, prefillAdults) %}
+                                                        <option value="{{ g }}" {{ g == prefillAdults ? 'selected' : '' }}>{{ g }} {{ g == 1 ? 'Guest' : 'Guests' }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                <span class="exp-subtotal-badge" id="expSubtotal_{{ exp.id }}">₱{{ (exp.price * prefillAdults)|number_format(0) }}</span>
+                                            </div>
+
+                                            <a href="{{ path(exp.route|default(exp.page)) }}" target="_blank" rel="noopener noreferrer" class="booking-exp-details-link" title="View details in new tab">
+                                                Details &rarr;
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Guest Information -->
+                    <div class="booking-card">
+                        <h2 class="booking-card-title">Guest Information</h2>
+                        <p class="booking-card-subtitle">Your details as the primary guest.</p>
+
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="guestFullName">Full Name</label>
+                                <input type="text" id="guestFullName" name="full_name" value="{{ app.user ? (app.user.firstName ~ ' ' ~ app.user.lastName)|trim : '' }}" placeholder="Enter your full name">
+                            </div>
+                        </div>
+
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="guestEmail">Email Address</label>
+                                <input type="email" id="guestEmail" name="email" value="{{ app.user ? app.user.email : '' }}" placeholder="you@example.com">
+                            </div>
+                        </div>
+
+                        <div class="booking-field-group">
+                            <div class="booking-field-outlined">
+                                <label for="guestPhone">Phone Number</label>
+                                <input type="tel" id="guestPhone" name="phone" placeholder="+63 XXX XXX XXXX">
+                            </div>
+                        </div>
+
+                        <div class="booking-field-group">
+                            <label class="booking-field-label">Payment Method</label>
+                            <div class="payment-methods">
+                                <label class="payment-option">
+                                    <input type="radio" name="payment_method" value="credit_card" checked>
+                                    <span>Credit Card</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment_method" value="gcash">
+                                    <span>GCash</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment_method" value="paymaya">
+                                    <span>PayMaya</span>
+                                </label>
+                                <label class="payment-option">
+                                    <input type="radio" name="payment_method" value="bank_transfer">
+                                    <span>Bank Transfer</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Guests -->
+                    <div class="booking-card" id="additionalGuestsCard">
+                        <h2 class="booking-card-title">Additional Guests</h2>
+                        <p class="booking-card-subtitle" id="additionalGuestsSubtitle">Add the names of other guests staying with you.</p>
+
+                        <div id="additionalGuestsContainer">
+                            <!-- Guest rows r generated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: Summary -->
+                <div class="booking-summary-column">
+
+                    <!-- Booking Summary -->
+                    <div class="booking-summary-card">
+                        <h3 class="booking-summary-title">Booking Summary</h3>
+
+                        <div class="summary-room-image" id="summaryRoomImage">
+                        </div>
+
+                        <div class="summary-room-info">
+                            <h4 id="summaryRoomName">-</h4>
+                            <span class="summary-room-badge" id="summaryRoomBadge">-</span>
+                        </div>
+
+                        <div class="summary-dates" id="summaryDates">
+                            <span>-</span>
+                        </div>
+
+                        <div class="summary-guests-line" id="summaryGuestsLine">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span id="summaryGuestsText">2 Adults, 0 Children</span>
+                        </div>
+
+                        <div class="summary-price-breakdown">
+                            <div class="summary-line">
+                                <span id="summaryNightsLabel">₱0 × 0 nights</span>
+                                <span id="summarySubtotal">₱0</span>
+                            </div>
+                            <div class="summary-line">
+                                <span>Taxes &amp; Fees (12%)</span>
+                                <span id="summaryTax">₱0</span>
+                            </div>
+                            <div class="summary-line">
+                                <span>Resort Fee</span>
+                                <span id="summaryResortFee">₱500</span>
+                            </div>
+                            <div class="summary-line summary-experiences-row" id="summaryExperiencesRow" style="display: none;">
+                                <span>Add-on Experiences</span>
+                                <span id="summaryExperiencesTotal">₱0</span>
+                            </div>
+                            <div class="summary-experiences-list" id="summaryExperiencesList" style="display: none;"></div>
+                            <div class="summary-total-line">
+                                <span>TOTAL</span>
+                                <span class="summary-total-amount" id="summaryTotal">₱0</span>
+                            </div>
+                        </div>
+
+                        <p class="summary-deposit-note">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            <span>50% upon booking, balance due upon check-in.</span>
+                        </p>
+
+                        <button type="button" class="btn-confirm-booking" id="btnConfirmBooking">Confirm Booking &rarr;</button>
+
+                        <p class="summary-cancel-note">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>Free cancellation up to 48 hours before check-in.</span>
+                        </p>
+                    </div>
+
+                    <!-- Special Requests -->
+                    <div class="booking-special-card">
+                        <h3 class="booking-special-title">Special Requests (optional)</h3>
+                        <textarea id="specialRequests" name="special_requests" rows="5" placeholder="Any dietary requirements, special occasions, accessibility needs..."></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Image Lightbox Overlay -->
+<div class="image-lightbox-overlay" id="imageLightbox">
+    <div class="image-lightbox-content">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <img id="lightboxImage" src="" alt="Room Image" />
+    </div>
+</div>
+
+<!-- Booking Confirmation Modal -->
+<div class="booking-modal-overlay" id="bookingModalOverlay">
+    <div class="booking-modal">
+        <div class="booking-modal-icon">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+        </div>
+        <h2 class="booking-modal-title">Reservation Confirmed!</h2>
+        <p class="booking-modal-subtitle">Your booking has been successfully submitted.</p>
+
+        <div class="booking-modal-details" id="bookingModalDetails">
+            <!-- Dynamically populated -->
+        </div>
+
+        <p class="booking-modal-dining-prompt">Would you like to explore our in-room dining options?</p>
+
+        <div class="booking-modal-actions">
+            <a href="{{ path('dining_index') }}" class="btn-modal-dining" id="btnModalDining">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                Browse El Juwan Dining
+            </a>
+            <a href="{{ path('home') }}" class="btn-modal-home" id="btnModalHome">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
