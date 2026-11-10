@@ -518,7 +518,15 @@
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
     .auth-body {
+        height: auto;
+        min-height: 100vh;
         padding: 12px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .auth-card {
+        max-height: none;
     }
 
     .auth-card-body {
