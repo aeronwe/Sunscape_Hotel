@@ -5,11 +5,14 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
+#[UniqueEntity(fields: ['email'], message: 'An account with this email already exists.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -18,12 +21,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(name: 'first_name', length: 50)]
+    #[Assert\NotBlank(message: 'First name is required.')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'First name must be at least 2 characters.')]
     private string $firstName = '';
 
     #[ORM\Column(name: 'last_name', length: 50)]
+    #[Assert\NotBlank(message: 'Last name is required.')]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'Last name must be at least 2 characters.')]
     private string $lastName = '';
 
     #[ORM\Column(length: 100, unique: true)]
+    #[Assert\NotBlank(message: 'Email address is required.')]
+    #[Assert\Email(message: 'Please enter a valid email address.')]
     private string $email = '';
 
     #[ORM\Column(length: 255)]

@@ -149,6 +149,32 @@
                 </form>
             </div>
 
+            {# Change Own Password #}
+            <div class="profile-section">
+                <h2 class="profile-section-title">Change Password</h2>
+                <form class="auth-form" method="POST" action="{{ path('account_index') }}" id="changePasswordForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token('account') }}">
+                    <div class="form-group">
+                        <label for="current_password" class="form-label">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" class="form-input"
+                               placeholder="Enter your current password" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group form-group-half">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input type="password" id="new_password" name="new_password" class="form-input"
+                                   minlength="8" placeholder="Minimum 8 characters" required>
+                        </div>
+                        <div class="form-group form-group-half">
+                            <label for="confirm_password" class="form-label">Confirm New Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-input"
+                                   minlength="8" placeholder="Re-enter new password" required>
+                        </div>
+                    </div>
+                    <button type="submit" name="change_password" class="btn-auth" id="changePasswordBtn">Update Password</button>
+                </form>
+            </div>
+
             {# Danger Zone #}
             <div class="danger-zone">
                 <h2 class="danger-zone-title">Danger Zone</h2>

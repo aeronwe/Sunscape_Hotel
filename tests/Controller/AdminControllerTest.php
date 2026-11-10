@@ -132,8 +132,26 @@ class AdminControllerTest extends WebTestCase
         ]);
         $this->assertResponseStatusCodeSame(403);
 
+        // Staff can change their own password at /admin/settings
+        $settingsCrawler = $client->request('GET', '/admin/settings');
+        $this->assertResponseIsSuccessful();
+        $settingsToken = $settingsCrawler->filter('input[name="_token"]')->first()->attr('value');
+        $client->request('POST', '/admin/settings', [
+            '_token' => $settingsToken,
+            'action' => 'update_password',
+            'superadmin_password' => 'admin123',
+            'new_password' => 'staffNewPass789',
+            'confirm_password' => 'staffNewPass789',
+        ]);
+        $this->assertResponseRedirects('/admin/settings');
+        $client->followRedirect();
+        $this->assertSelectorExists('.admin-alert-success');
+
         // Clean up
-        $em->clear();
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $roomRepo = static::getContainer()->get(RoomRepository::class);
+        $adminRepo = static::getContainer()->get(AdminRepository::class);
+
         $staffRoom = $roomRepo->findOneBy(['name' => $staffRoomName]);
         if ($staffRoom) {
             $em->remove($staffRoom);
@@ -141,6 +159,64 @@ class AdminControllerTest extends WebTestCase
         $adminRoomReloaded = $roomRepo->find($adminRoom->getId());
         if ($adminRoomReloaded) {
             $em->remove($adminRoomReloaded);
+        }
+        $adminReloaded = $adminRepo->find($admin->getId());
+        if ($adminReloaded) {
+            $em->remove($adminReloaded);
+        }
+        $staffReloaded = $adminRepo->find($staff->getId());
+        if ($staffReloaded) {
+            $em->remove($staffReloaded);
+        }
+        $em->flush();
+    }
+
+    public function testDisabledAndArchivedStaffCannotLogin(): void
+    {
+        $client = static::createClient();
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+
+        $disabledEmail = 'disabled_staff_' . uniqid() . '@sunscape.com';
+        $disabledStaff = $this->createTestAdmin($disabledEmail, Admin::ROLE_STAFF);
+        $disabledStaff->setStatus(Admin::STATUS_DISABLED);
+
+        $archivedEmail = 'archived_staff_' . uniqid() . '@sunscape.com';
+        $archivedStaff = $this->createTestAdmin($archivedEmail, Admin::ROLE_STAFF);
+        $archivedStaff->setStatus(Admin::STATUS_ARCHIVED);
+        $em->flush();
+
+        // 1. Attempt login as disabled staff
+        $crawler = $client->request('GET', '/admin/login');
+        $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+        $client->request('POST', '/admin/login', [
+            '_csrf_token' => $csrfToken,
+            'email' => $disabledEmail,
+            'password' => 'admin123',
+        ]);
+        $this->assertResponseRedirects('/admin/login');
+        $client->followRedirect();
+        $this->assertAnySelectorTextContains('.admin-login-error', 'disabled');
+
+        // 2. Attempt login as archived staff
+        $crawler = $client->request('GET', '/admin/login');
+        $csrfToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+        $client->request('POST', '/admin/login', [
+            '_csrf_token' => $csrfToken,
+            'email' => $archivedEmail,
+            'password' => 'admin123',
+        ]);
+        $this->assertResponseRedirects('/admin/login');
+        $client->followRedirect();
+        $this->assertAnySelectorTextContains('.admin-login-error', 'archived');
+
+        // Clean up
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $adminRepo = static::getContainer()->get(AdminRepository::class);
+        foreach ([$disabledEmail, $archivedEmail] as $email) {
+            $acc = $adminRepo->findOneBy(['email' => $email]);
+            if ($acc) {
+                $em->remove($acc);
+            }
         }
         $em->flush();
     }

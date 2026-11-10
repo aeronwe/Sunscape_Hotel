@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Admin;
+use App\Entity\User;
 use App\Repository\AdminRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/admin')]
 #[IsGranted('ROLE_ADMIN')]
@@ -20,8 +23,10 @@ final class StaffController extends AbstractController
     public function index(
         Request $request,
         AdminRepository $adminRepository,
+        UserRepository $userRepository,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        ValidatorInterface $validator,
     ): Response {
         /** @var Admin|null $currentAdmin */
         $currentAdmin = $this->getUser();
@@ -123,6 +128,11 @@ final class StaffController extends AbstractController
                 $newStatus = trim($request->request->getString('new_status', Admin::STATUS_DISABLED));
                 $staff = $adminRepository->find($staffId);
 
+                if (!in_array($newStatus, [Admin::STATUS_ACTIVE, Admin::STATUS_DISABLED, Admin::STATUS_ARCHIVED], true)) {
+                    $this->addFlash('error', 'Invalid account status.');
+                    return $this->redirectToRoute('admin_staff');
+                }
+
                 if ($staff) {
                     if ($currentAdmin && $staff->getId() === $currentAdmin->getId()) {
                         $this->addFlash('error', 'You cannot disable or archive your own account.');
@@ -155,6 +165,65 @@ final class StaffController extends AbstractController
 
                 return $this->redirectToRoute('admin_staff');
             }
+
+            if ($request->request->has('save_guest_user')) {
+                $guestId = $request->request->getInt('guest_id');
+                $firstName = trim($request->request->getString('first_name'));
+                $lastName = trim($request->request->getString('last_name'));
+                $email = strtolower(trim($request->request->getString('email')));
+                $password = $request->request->getString('password');
+
+                $guest = $userRepository->find($guestId);
+                if (!$guest instanceof User) {
+                    $this->addFlash('error', 'Guest user account not found.');
+                    return $this->redirectToRoute('admin_staff');
+                }
+
+                $existing = $userRepository->findOneBy(['email' => $email]);
+                if ($existing && $existing->getId() !== $guest->getId()) {
+                    $this->addFlash('error', 'That email address is already used by another guest account.');
+                    return $this->redirectToRoute('admin_staff');
+                }
+
+                $guest->setFirstName($firstName)
+                    ->setLastName($lastName)
+                    ->setEmail($email)
+                    ->setUpdatedAt(new \DateTimeImmutable());
+
+                $violations = $validator->validate($guest);
+                if (count($violations) > 0) {
+                    $entityManager->refresh($guest);
+                    $this->addFlash('error', $violations[0]->getMessage());
+                    return $this->redirectToRoute('admin_staff');
+                }
+
+                if ($password !== '') {
+                    if (strlen($password) < 8) {
+                        $entityManager->refresh($guest);
+                        $this->addFlash('error', 'New guest password must be at least 8 characters.');
+                        return $this->redirectToRoute('admin_staff');
+                    }
+                    $guest->setPassword($passwordHasher->hashPassword($guest, $password));
+                }
+
+                $entityManager->flush();
+                $this->addFlash('success', sprintf('Guest user account "%s" has been updated.', $guest->getFullName()));
+                return $this->redirectToRoute('admin_staff');
+            }
+
+            if ($request->request->has('delete_guest_user')) {
+                $guestId = $request->request->getInt('guest_id');
+                $guest = $userRepository->find($guestId);
+
+                if ($guest instanceof User) {
+                    $deletedName = $guest->getFullName();
+                    $entityManager->remove($guest);
+                    $entityManager->flush();
+                    $this->addFlash('success', sprintf('Guest user account "%s" has been deleted.', $deletedName));
+                }
+
+                return $this->redirectToRoute('admin_staff');
+            }
         }
 
         $filterRole = $request->query->getString('role', 'all');
@@ -167,8 +236,11 @@ final class StaffController extends AbstractController
             $searchQuery !== '' ? $searchQuery : null
         );
 
+        $guestUsers = $userRepository->findBy([], ['createdAt' => 'DESC']);
+
         return $this->render('admin/staff.html.twig', [
             'staffList' => $staffList,
+            'guestUsers' => $guestUsers,
             'filterRole' => $filterRole,
             'filterStatus' => $filterStatus,
             'searchQuery' => $searchQuery,
@@ -176,4 +248,5 @@ final class StaffController extends AbstractController
         ]);
     }
 }
+
 

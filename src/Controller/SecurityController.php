@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 final class SecurityController extends AbstractController
 {
@@ -36,6 +37,7 @@ final class SecurityController extends AbstractController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher,
         UserRepository $userRepo,
+        ValidatorInterface $validator,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('account_index');
@@ -54,15 +56,16 @@ final class SecurityController extends AbstractController
             $password        = $request->request->getString('password');
             $confirmPassword = $request->request->getString('confirm_password');
 
-            if (strlen($firstName) < 2) {
-                $errors[] = 'First name must be at least 2 characters.';
+            $user = new User();
+            $user->setFirstName($firstName);
+            $user->setLastName($lastName);
+            $user->setEmail($email);
+
+            $violations = $validator->validate($user);
+            foreach ($violations as $violation) {
+                $errors[] = $violation->getMessage();
             }
-            if (strlen($lastName) < 2) {
-                $errors[] = 'Last name must be at least 2 characters.';
-            }
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors[] = 'Please enter a valid email address.';
-            }
+
             if (strlen($password) < 8) {
                 $errors[] = 'Password must be at least 8 characters.';
             }
@@ -78,21 +81,13 @@ final class SecurityController extends AbstractController
             }
 
             if (empty($errors)) {
-                try {
-                    $user = new User();
-                    $user->setFirstName($firstName);
-                    $user->setLastName($lastName);
-                    $user->setEmail($email);
-                    $user->setPassword($hasher->hashPassword($user, $password));
-                    $em->persist($user);
-                    $em->flush();
+                $user->setPassword($hasher->hashPassword($user, $password));
+                $em->persist($user);
+                $em->flush();
 
-                    $this->addFlash('success', 'Account created successfully! Please log in.');
-                    $redirectParams = $redirect !== '' ? ['redirect' => $redirect] : [];
-                    return $this->redirectToRoute('app_login', $redirectParams);
-                } catch (\Throwable) {
-                    $errors[] = 'Registration failed. Please try again.';
-                }
+                $this->addFlash('success', 'Account created successfully! Please log in.');
+                $redirectParams = $redirect !== '' ? ['redirect' => $redirect] : [];
+                return $this->redirectToRoute('app_login', $redirectParams);
             }
         }
 
@@ -105,7 +100,7 @@ final class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
+    #[Route('/logout', name: 'app_logout', methods: ['GET', 'POST'])]
     public function logout(): never
     {
         throw new \LogicException('Intercepted by the firewall.');

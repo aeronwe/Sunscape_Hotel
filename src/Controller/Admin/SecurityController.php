@@ -28,7 +28,7 @@ final class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/logout', name: 'admin_logout', methods: ['POST'])]
+    #[Route('/admin/logout', name: 'admin_logout', methods: ['GET', 'POST'])]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');

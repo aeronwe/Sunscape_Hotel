@@ -5,11 +5,14 @@ namespace App\Entity;
 use App\Repository\AdminRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AdminRepository::class)]
 #[ORM\Table(name: 'admins')]
+#[UniqueEntity(fields: ['email'], message: 'That email/username is already used by another account.')]
 class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public const ROLE_ADMIN = 'ROLE_ADMIN';
@@ -25,18 +28,24 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Name is required.')]
+    #[Assert\Length(min: 2, max: 100, minMessage: 'Name must be at least 2 characters.')]
     private string $name = '';
 
     #[ORM\Column(length: 100, unique: true)]
+    #[Assert\NotBlank(message: 'Username or email is required.')]
+    #[Assert\Length(min: 3, max: 100)]
     private string $email = '';
 
     #[ORM\Column(length: 255)]
     private string $password = '';
 
     #[ORM\Column(length: 30, options: ['default' => self::ROLE_ADMIN])]
+    #[Assert\Choice(choices: [self::ROLE_ADMIN, self::ROLE_STAFF])]
     private string $role = self::ROLE_ADMIN;
 
     #[ORM\Column(length: 30, options: ['default' => self::STATUS_ACTIVE])]
+    #[Assert\Choice(choices: [self::STATUS_ACTIVE, self::STATUS_DISABLED, self::STATUS_ARCHIVED])]
     private string $status = self::STATUS_ACTIVE;
 
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]

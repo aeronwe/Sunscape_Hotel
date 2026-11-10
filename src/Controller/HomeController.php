@@ -19,24 +19,20 @@ class HomeController extends AbstractController
         }
 
         // Fetch featured rooms from DB (first 3), with static fallback
-        try {
-            $dbRooms = $roomRepository->findFeatured(3);
-            $featuredRooms = array_map(
-                fn($room) => [
-                    'id'          => $room->getId(),
-                    'slug'        => $room->getSlug(),
-                    'name'        => $room->getName(),
-                    'badge'       => $room->getBadge(),
-                    'badge_class' => $room->getBadgeClass(),
-                    'specs'       => $room->getSpecs(),
-                    'price'       => '₱' . number_format($room->getPrice(), 0),
-                    'image_url'   => $room->getImageUrl(),
-                ],
-                $dbRooms
-            );
-        } catch (\Throwable) {
-            $featuredRooms = [];
-        }
+        $dbRooms = $roomRepository->findFeatured(3);
+        $featuredRooms = array_map(
+            fn($room) => [
+                'id'          => $room->getId(),
+                'slug'        => $room->getSlug(),
+                'name'        => $room->getName(),
+                'badge'       => $room->getBadge(),
+                'badge_class' => $room->getBadgeClass(),
+                'specs'       => $room->getSpecs(),
+                'price'       => '₱' . number_format($room->getPrice(), 0),
+                'image_url'   => $room->getImageUrl(),
+            ],
+            $dbRooms
+        );
 
         // Static fallback if DB is empty or unavailable
         if (empty($featuredRooms)) {

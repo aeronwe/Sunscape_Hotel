@@ -37,18 +37,14 @@ final class BookingController extends AbstractController
         $prefillRoomType = $bookingSearch['room_type'] ?? '';
 
         // Load rooms from DB; fallback to static data
-        try {
-            $dbRooms = $roomRepo->findBy([], ['id' => 'ASC']);
-            $rooms = array_map(fn ($r) => [
-                'id'    => $r->getId(),
-                'name'  => $r->getName(),
-                'badge' => $r->getBadge(),
-                'price' => (float) $r->getPrice(),
-                'image' => $r->getImageUrl(),
-            ], $dbRooms);
-        } catch (\Throwable) {
-            $rooms = [];
-        }
+        $dbRooms = $roomRepo->findBy([], ['id' => 'ASC']);
+        $rooms = array_map(fn ($r) => [
+            'id'    => $r->getId(),
+            'name'  => $r->getName(),
+            'badge' => $r->getBadge(),
+            'price' => (float) $r->getPrice(),
+            'image' => $r->getImageUrl(),
+        ], $dbRooms);
 
         if (empty($rooms)) {
             $rooms = $this->fallbackRooms();
@@ -65,16 +61,12 @@ final class BookingController extends AbstractController
         }
 
         // Load experiences from DB; fallback to static data
-        try {
-            $dbServices = $serviceRepo->findBy([], ['id' => 'ASC']);
-            $experiences = [];
-            foreach ($dbServices as $s) {
-                if ((float) $s->getPrice() > 0 || in_array((int) $s->getId(), [3, 4, 6], true)) {
-                    $experiences[] = $this->serviceToExperience($s);
-                }
+        $dbServices = $serviceRepo->findBy([], ['id' => 'ASC']);
+        $experiences = [];
+        foreach ($dbServices as $s) {
+            if ((float) $s->getPrice() > 0 || in_array((int) $s->getId(), [3, 4, 6], true)) {
+                $experiences[] = $this->serviceToExperience($s);
             }
-        } catch (\Throwable) {
-            $experiences = [];
         }
 
         if (empty($experiences)) {

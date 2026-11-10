@@ -110,6 +110,66 @@
         </table>
     </div>
 </div>
+
+<!-- Registered Guest User Accounts Section -->
+<div class="admin-panel" style="margin-top: 28px;">
+    <div class="panel-header">
+        <h2 class="panel-title">Registered Guest User Accounts ({{ guestUsers|length }})</h2>
+    </div>
+
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email Address</th>
+                    <th>Role</th>
+                    <th>Member Since</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if guestUsers is empty %}
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding:40px; color:var(--admin-text-dim);">No registered guest user accounts found.</td>
+                    </tr>
+                {% else %}
+                    {% for guest in guestUsers %}
+                        <tr>
+                            <td class="td-primary">#{{ guest.id }}</td>
+                            <td class="td-primary">{{ guest.firstName }} {{ guest.lastName }}</td>
+                            <td>{{ guest.email }}</td>
+                            <td>
+                                <span class="status-badge status-confirmed">Guest (ROLE_USER)</span>
+                            </td>
+                            <td>{{ guest.createdAt ? guest.createdAt|date('M d, Y') : '' }}</td>
+                            <td>
+                                <div class="td-actions">
+                                    <button type="button" class="admin-btn admin-btn-sm admin-btn-blue"
+                                        data-modal-open="guestUserModal"
+                                        data-edit-id="{{ guest.id }}"
+                                        data-edit-title="Edit Guest User ({{ guest.firstName }} {{ guest.lastName }})"
+                                        data-field-guest_id="{{ guest.id }}"
+                                        data-field-first_name="{{ guest.firstName }}"
+                                        data-field-last_name="{{ guest.lastName }}"
+                                        data-field-email="{{ guest.email }}">
+                                        Edit / Reset PW
+                                    </button>
+                                    <form method="POST" action="{{ path('admin_staff') }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete guest user {{ (guest.firstName ~ ' ' ~ guest.lastName)|e('js') }}?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin_staff') }}">
+                                        <input type="hidden" name="guest_id" value="{{ guest.id }}">
+                                        <button type="submit" name="delete_guest_user" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
 
 {% block modals %}
@@ -162,6 +222,47 @@
             <div class="admin-modal-footer">
                 <button type="button" class="admin-btn admin-btn-outline admin-modal-close">Cancel</button>
                 <button type="submit" name="save_staff" class="admin-btn admin-btn-gold">Save Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Guest User Modal -->
+<div class="admin-modal-overlay" id="guestUserModal">
+    <div class="admin-modal">
+        <div class="admin-modal-header">
+            <h3>Edit Guest User Account</h3>
+            <button type="button" class="admin-modal-close" aria-label="Close">&times;</button>
+        </div>
+        <form method="POST" action="{{ path('admin_staff') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_staff') }}">
+            <div class="admin-modal-body">
+                <input type="hidden" name="guest_id" value="">
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="form-group">
+                        <label for="guestFirstName">First Name *</label>
+                        <input type="text" id="guestFirstName" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestLastName">Last Name *</label>
+                        <input type="text" id="guestLastName" name="last_name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="guestEmail">Email Address *</label>
+                    <input type="email" id="guestEmail" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="guestPassword">Reset Password (Optional — leave blank to keep current)</label>
+                    <input type="password" id="guestPassword" name="password" minlength="8" placeholder="Minimum 8 characters">
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-btn admin-btn-outline admin-modal-close">Cancel</button>
+                <button type="submit" name="save_guest_user" class="admin-btn admin-btn-gold">Save Guest User</button>
             </div>
         </form>
     </div>

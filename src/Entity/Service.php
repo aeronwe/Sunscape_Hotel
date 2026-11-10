@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ServiceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ServiceRepository::class)]
 #[ORM\Table(name: 'services')]
@@ -16,9 +17,12 @@ class Service
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Category is required.')]
     private string $category = 'dining';
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Service name is required.')]
+    #[Assert\Length(max: 100)]
     private string $name = '';
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -31,6 +35,7 @@ class Service
     private ?string $hours = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Assert\PositiveOrZero(message: 'Price must be zero or positive.')]
     private string $price = '0.00';
 
     #[ORM\Column(name: 'image_url', length: 500)]

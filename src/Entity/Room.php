@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RoomRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 #[ORM\Table(name: 'rooms')]
@@ -16,18 +17,25 @@ class Room
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank(message: 'Room name is required.')]
+    #[Assert\Length(max: 100)]
     private string $name = '';
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: 'Badge is required.')]
+    #[Assert\Length(max: 50)]
     private string $badge = '';
 
     #[ORM\Column(name: 'badge_class', length: 50)]
     private string $badgeClass = '';
 
     #[ORM\Column(length: 200)]
+    #[Assert\NotBlank(message: 'Room specifications are required.')]
+    #[Assert\Length(max: 200)]
     private string $specs = '';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Assert\PositiveOrZero(message: 'Price must be zero or positive.')]
     private string $price = '0.00';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

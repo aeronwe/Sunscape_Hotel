@@ -61,6 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const hiddenId = modal.querySelector('input[name="edit_id"]');
         if (hiddenId) hiddenId.value = btn.dataset.editId;
 
+        const pwInput = modal.querySelector('input[type="password"]');
+        if (pwInput) pwInput.value = '';
+
         // Populate all data-field-* attributes
         Array.from(btn.attributes).forEach(attr => {
             if (attr.name.startsWith('data-field-')) {

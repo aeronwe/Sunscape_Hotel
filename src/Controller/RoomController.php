@@ -14,11 +14,7 @@ final class RoomController extends AbstractController
     #[Route('', name: 'room_index', methods: ['GET'])]
     public function index(Request $request, RoomRepository $rooms): Response
     {
-        try {
-            $roomList = array_map(fn ($room) => $this->roomData($room), $rooms->findBy([], ['id' => 'ASC']));
-        } catch (\Throwable) {
-            $roomList = [];
-        }
+        $roomList = array_map(fn ($room) => $this->roomData($room), $rooms->findBy([], ['id' => 'ASC']));
 
         if (!$roomList) {
             $roomList = $this->fallbackRooms();

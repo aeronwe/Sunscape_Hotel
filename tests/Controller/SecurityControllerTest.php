@@ -113,8 +113,73 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSame('Pedro Updated', $updatedUser->getFirstName());
         $this->assertSame('Penduko Senior', $updatedUser->getLastName());
 
-        // 4. Clean up test user
-        $em->remove($updatedUser);
-        $em->flush();
+        // 4. Test change-own-password with wrong current password fails
+        $crawler = $client->request('GET', '/account');
+        $accountToken = $crawler->filter('input[name="_token"]')->first()->attr('value');
+        $client->request('POST', '/account', [
+            '_token' => $accountToken,
+            'change_password' => '1',
+            'current_password' => 'WrongCurrentPassword!',
+            'new_password' => 'BrandNewPass456!',
+            'confirm_password' => 'BrandNewPass456!',
+        ]);
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('.alert-error');
+
+        // 5. Test change-own-password with valid current password succeeds
+        $client->request('POST', '/account', [
+            '_token' => $accountToken,
+            'change_password' => '1',
+            'current_password' => 'SecretPassword123!',
+            'new_password' => 'BrandNewPass456!',
+            'confirm_password' => 'BrandNewPass456!',
+        ]);
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorExists('.alert-success');
+
+        // 6. Test logout
+        $crawler = $client->request('GET', '/account');
+        $logoutToken = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+        $client->request('POST', '/logout', [
+            '_csrf_token' => $logoutToken,
+        ]);
+        $this->assertResponseRedirects();
+
+        // 7. Prove old password no longer works
+        $crawler = $client->request('GET', '/login');
+        $loginCsrf = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+        $client->request('POST', '/login', [
+            '_csrf_token' => $loginCsrf,
+            'email' => $testEmail,
+            'password' => 'SecretPassword123!',
+        ]);
+        $this->assertResponseRedirects('/login');
+        $client->followRedirect();
+        $this->assertSelectorExists('.auth-error-text');
+
+        // 8. Prove new password works
+        $crawler = $client->request('GET', '/login');
+        $loginCsrf = $crawler->filter('input[name="_csrf_token"]')->attr('value');
+        $client->request('POST', '/login', [
+            '_csrf_token' => $loginCsrf,
+            'email' => $testEmail,
+            'password' => 'BrandNewPass456!',
+        ]);
+        $this->assertResponseRedirects('/account');
+        $client->followRedirect();
+        $this->assertResponseIsSuccessful();
+
+        // 9. Test regular user account deletion
+        $crawler = $client->request('GET', '/account');
+        $accountToken = $crawler->filter('input[name="_token"]')->first()->attr('value');
+        $client->request('POST', '/account', [
+            '_token' => $accountToken,
+            'delete_account' => '1',
+        ]);
+        $this->assertResponseRedirects('/login');
+
+        $em->clear();
+        $deletedUser = $userRepo->findOneBy(['email' => $testEmail]);
+        $this->assertNull($deletedUser, 'Deleted user should no longer exist in the database.');
     }
 }
