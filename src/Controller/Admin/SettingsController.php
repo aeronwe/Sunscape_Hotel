@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_STAFF')]
 final class SettingsController extends AbstractController
 {
     #[Route('/settings', name: 'admin_settings', methods: ['GET', 'POST'])]
@@ -43,7 +43,7 @@ final class SettingsController extends AbstractController
                 || $currentPassword === ''
                 || !$passwordHasher->isPasswordValid($currentAdmin, $currentPassword)
             ) {
-                $this->addFlash('error', 'Authorization failed: Incorrect current admin password.');
+                $this->addFlash('error', 'Authorization failed: Incorrect current password.');
                 return $this->redirectToRoute('admin_settings');
             }
 
@@ -52,11 +52,11 @@ final class SettingsController extends AbstractController
                 $email = trim($request->request->getString('email'));
 
                 if ($name === '') {
-                    $this->addFlash('error', 'Please enter an admin display name.');
+                    $this->addFlash('error', 'Please enter a display name.');
                     return $this->redirectToRoute('admin_settings');
                 }
                 if ($email === '') {
-                    $this->addFlash('error', 'Please enter an admin username / email.');
+                    $this->addFlash('error', 'Please enter a username / email.');
                     return $this->redirectToRoute('admin_settings');
                 }
 
@@ -68,7 +68,7 @@ final class SettingsController extends AbstractController
                     ->getOneOrNullResult();
 
                 if ($existing) {
-                    $this->addFlash('error', 'This username / email is already in use by another admin.');
+                    $this->addFlash('error', 'This username / email is already in use by another account.');
                     return $this->redirectToRoute('admin_settings');
                 }
 
@@ -76,7 +76,7 @@ final class SettingsController extends AbstractController
                     $currentAdmin->setName($name);
                     $currentAdmin->setEmail($email);
                     $entityManager->flush();
-                    $this->addFlash('success', 'Admin profile and username/email updated successfully!');
+                    $this->addFlash('success', 'Profile and username/email updated successfully!');
                 }
                 return $this->redirectToRoute('admin_settings');
             }
@@ -102,7 +102,7 @@ final class SettingsController extends AbstractController
                     $hashed = $passwordHasher->hashPassword($currentAdmin, $newPassword);
                     $currentAdmin->setPassword($hashed);
                     $entityManager->flush();
-                    $this->addFlash('success', 'Admin password changed successfully! Use your new password on your next login.');
+                    $this->addFlash('success', 'Password changed successfully! Use your new password on your next login.');
                 }
                 return $this->redirectToRoute('admin_settings');
             }

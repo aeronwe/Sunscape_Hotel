@@ -77,11 +77,13 @@
                                             <button type="submit" name="update_status" class="admin-btn admin-btn-sm admin-btn-red">Cancel</button>
                                         </form>
                                     {% endif %}
-                                    <form method="POST" action="{{ path('admin_reservations') }}" style="display:inline;" onsubmit="return confirm('Delete reservation #{{ res.id }}?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('admin_reservations') }}">
-                                        <input type="hidden" name="reservation_id" value="{{ res.id }}">
-                                        <button type="submit" name="delete_reservation" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
-                                    </form>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <form method="POST" action="{{ path('admin_reservations') }}" style="display:inline;" onsubmit="return confirm('Delete reservation #{{ res.id }}?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_reservations') }}">
+                                            <input type="hidden" name="reservation_id" value="{{ res.id }}">
+                                            <button type="submit" name="delete_reservation" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>

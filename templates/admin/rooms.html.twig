@@ -7,47 +7,71 @@
 <div class="admin-panel">
     <div class="panel-header">
         <h2 class="panel-title">All Rooms ({{ rooms|length }})</h2>
-        <button class="admin-btn admin-btn-gold" data-modal-open="roomModal" data-add-title="Add New Room">
-            Add Room
-        </button>
+        <div class="panel-actions" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <form method="GET" action="{{ path('admin_rooms') }}" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="text" name="search" class="admin-search" placeholder="Search room name, badge, specs..." value="{{ searchQuery|default('') }}">
+                <select name="owner" class="admin-select">
+                    <option value="all" {% if ownerFilter|default('all') == 'all' %}selected{% endif %}>All Records</option>
+                    <option value="mine" {% if ownerFilter|default('all') == 'mine' %}selected{% endif %}>My Records Only</option>
+                </select>
+                <button type="submit" class="admin-btn admin-btn-outline">Filter</button>
+            </form>
+            <button type="button" class="admin-btn admin-btn-gold" data-modal-open="roomModal" data-add-title="Add New Room">
+                + Add Room
+            </button>
+        </div>
     </div>
 
     {% if rooms is empty %}
         <div class="admin-empty">
-            <p>No rooms added yet. Click "Add Room" to get started.</p>
+            <p>No rooms match your filter criteria. Click "+ Add Room" to create one.</p>
         </div>
     {% else %}
         <div class="admin-rooms-grid">
             {% for room in rooms %}
                 {% set roomImage = room.imageUrl|replace({'../../assets/': '', '../assets/': '', 'assets/': ''})|trim('/') %}
                 {% set roomImageUrl = roomImage starts with 'http://' or roomImage starts with 'https://' ? roomImage : asset(roomImage starts with 'images/' ? roomImage : 'images/' ~ roomImage) %}
+                {% set canModify = is_granted('ROLE_ADMIN') or (room.createdBy and app.user and room.createdBy.id == app.user.id) %}
                 <div class="admin-room-card">
                     <div class="admin-room-img">
-                    <img src="{{ roomImageUrl }}" alt="{{ room.name }}" loading="lazy">
+                        <img src="{{ roomImageUrl }}" alt="{{ room.name }}" loading="lazy">
                     </div>
                     <div class="admin-room-body">
                         <h4>{{ room.name }}</h4>
                         <p class="admin-room-specs">{{ room.specs }}</p>
                         <p class="admin-room-price">₱{{ room.price|number_format(0, '.', ',') }} <span>/ night</span></p>
+                        <p style="font-size:0.74rem; color:var(--admin-text-dim); margin:4px 0 10px;">
+                            Created by:
+                            {% if room.createdBy %}
+                                <strong>{{ room.createdBy.name }}</strong>
+                                ({{ room.createdBy.role == 'ROLE_ADMIN' ? 'Admin' : 'Staff' }})
+                            {% else %}
+                                <strong>System Admin</strong>
+                            {% endif %}
+                        </p>
                         <div class="admin-room-actions">
-                            <button class="admin-btn admin-btn-sm admin-btn-blue"
-                                data-modal-open="roomModal"
-                                data-edit-id="{{ room.id }}"
-                                data-edit-title="Edit Room"
-                                data-field-name="{{ room.name }}"
-                                data-field-badge="{{ room.badge }}"
-                                data-field-badge_class="{{ room.badgeClass }}"
-                                data-field-specs="{{ room.specs }}"
-                                data-field-price="{{ room.price }}"
-                                data-field-description="{{ room.description|default('') }}"
-                                data-field-image_url="{{ room.imageUrl }}">
-                                Edit
-                            </button>
-                            <form method="POST" action="{{ path('admin_rooms') }}" style="display:inline;" onsubmit="return confirm('Delete this room?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('admin_rooms') }}">
-                                <input type="hidden" name="room_id" value="{{ room.id }}">
-                                <button type="submit" name="delete_room" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
-                            </form>
+                            {% if canModify %}
+                                <button type="button" class="admin-btn admin-btn-sm admin-btn-blue"
+                                    data-modal-open="roomModal"
+                                    data-edit-id="{{ room.id }}"
+                                    data-edit-title="Edit Room"
+                                    data-field-name="{{ room.name }}"
+                                    data-field-badge="{{ room.badge }}"
+                                    data-field-badge_class="{{ room.badgeClass }}"
+                                    data-field-specs="{{ room.specs }}"
+                                    data-field-price="{{ room.price }}"
+                                    data-field-description="{{ room.description|default('') }}"
+                                    data-field-image_url="{{ room.imageUrl }}">
+                                    Edit
+                                </button>
+                                <form method="POST" action="{{ path('admin_rooms') }}" style="display:inline;" onsubmit="return confirm('Delete this room?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_rooms') }}">
+                                    <input type="hidden" name="room_id" value="{{ room.id }}">
+                                    <button type="submit" name="delete_room" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                                </form>
+                            {% else %}
+                                <span class="status-badge status-pending" title="Staff can only edit or delete their own records.">View Only</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -63,7 +87,7 @@
     <div class="admin-modal">
         <div class="admin-modal-header">
             <h3>Add New Room</h3>
-            <button class="admin-modal-close" aria-label="Close">&times;</button>
+            <button type="button" class="admin-modal-close" aria-label="Close">&times;</button>
         </div>
         <form method="POST" action="{{ path('admin_rooms') }}">
             <input type="hidden" name="_token" value="{{ csrf_token('admin_rooms') }}">
@@ -76,7 +100,7 @@
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
                     <div class="form-group">
                         <label for="roomBadge">Badge Label *</label>
-                        <input type="text" id="roomBadge" name="badge" placeholder="e.g. Deluxe">
+                        <input type="text" id="roomBadge" name="badge" placeholder="e.g. Deluxe" required>
                     </div>
                     <div class="form-group">
                         <label for="roomBadgeClass">Badge Class *</label>
@@ -89,11 +113,11 @@
                 </div>
                 <div class="form-group">
                     <label for="roomSpecs">Specs *</label>
-                    <input type="text" id="roomSpecs" name="specs" placeholder="e.g. 38 sqm · 2 Guests · King">
+                    <input type="text" id="roomSpecs" name="specs" placeholder="e.g. 38 sqm · 2 Guests · King" required>
                 </div>
                 <div class="form-group">
                     <label for="roomPrice">Price per Night (₱) *</label>
-                    <input type="number" id="roomPrice" name="price" step="0.01" min="0" placeholder="4500">
+                    <input type="number" id="roomPrice" name="price" step="0.01" min="0" placeholder="4500" required>
                 </div>
                 <div class="form-group">
                     <label for="roomDesc">Description</label>
@@ -101,7 +125,7 @@
                 </div>
                 <div class="form-group">
                     <label for="roomImage">Image URL *</label>
-                    <input type="text" id="roomImage" name="image_url" placeholder="images/room.jpg or https://...">
+                    <input type="text" id="roomImage" name="image_url" placeholder="images/room.jpg or https://..." required>
                 </div>
             </div>
             <div class="admin-modal-footer">

@@ -1,0 +1,170 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Staff &amp; User Management | Admin Panel{% endblock %}
+{% block topbar_title %}Staff &amp; User Management{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <div class="panel-header">
+        <h2 class="panel-title">All Staff &amp; Admin Accounts ({{ staffList|length }})</h2>
+        <div class="panel-actions" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <form method="GET" action="{{ path('admin_staff') }}" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="text" name="search" class="admin-search" placeholder="Search name or email..." value="{{ searchQuery }}">
+                <select name="role" class="admin-select">
+                    <option value="all" {% if filterRole == 'all' %}selected{% endif %}>All Roles</option>
+                    <option value="ROLE_ADMIN" {% if filterRole == 'ROLE_ADMIN' %}selected{% endif %}>Admin</option>
+                    <option value="ROLE_STAFF" {% if filterRole == 'ROLE_STAFF' %}selected{% endif %}>Staff</option>
+                </select>
+                <select name="status" class="admin-select">
+                    <option value="all" {% if filterStatus == 'all' %}selected{% endif %}>All Status</option>
+                    <option value="active" {% if filterStatus == 'active' %}selected{% endif %}>Active</option>
+                    <option value="disabled" {% if filterStatus == 'disabled' %}selected{% endif %}>Disabled</option>
+                    <option value="archived" {% if filterStatus == 'archived' %}selected{% endif %}>Archived</option>
+                </select>
+                <button type="submit" class="admin-btn admin-btn-outline">Filter</button>
+            </form>
+            <button type="button" class="admin-btn admin-btn-gold" data-modal-open="staffModal" data-add-title="Create Staff / Admin Account">
+                + Add Account
+            </button>
+        </div>
+    </div>
+
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Username / Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Date Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if staffList is empty %}
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:40px; color:var(--admin-text-dim);">No staff or admin accounts found.</td>
+                    </tr>
+                {% else %}
+                    {% for member in staffList %}
+                        <tr>
+                            <td class="td-primary">#{{ member.id }}</td>
+                            <td class="td-primary">
+                                {{ member.name }}
+                                {% if app.user and app.user.id == member.id %}
+                                    <span style="font-size:0.72rem; color:var(--admin-gold); font-weight:600;">(You)</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ member.email }}</td>
+                            <td>
+                                <span class="status-badge {{ member.role == 'ROLE_ADMIN' ? 'status-confirmed' : 'status-pending' }}">
+                                    {{ member.role == 'ROLE_ADMIN' ? 'Admin' : 'Staff' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge {{ member.status == 'active' ? 'status-confirmed' : 'status-cancelled' }}">
+                                    {{ member.status|capitalize }}
+                                </span>
+                            </td>
+                            <td>{{ member.createdAt ? member.createdAt|date('M d, Y') : '' }}</td>
+                            <td>
+                                <div class="td-actions">
+                                    <button type="button" class="admin-btn admin-btn-sm admin-btn-blue"
+                                        data-modal-open="staffModal"
+                                        data-edit-id="{{ member.id }}"
+                                        data-edit-title="Edit Account ({{ member.name }})"
+                                        data-field-name="{{ member.name }}"
+                                        data-field-email="{{ member.email }}"
+                                        data-field-role="{{ member.role }}"
+                                        data-field-status="{{ member.status }}">
+                                        Edit / Reset PW
+                                    </button>
+
+                                    {% if not (app.user and app.user.id == member.id) %}
+                                        <form method="POST" action="{{ path('admin_staff') }}" style="display:inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_staff') }}">
+                                            <input type="hidden" name="staff_id" value="{{ member.id }}">
+                                            {% if member.status == 'active' %}
+                                                <input type="hidden" name="new_status" value="disabled">
+                                                <button type="submit" name="toggle_status" class="admin-btn admin-btn-sm admin-btn-outline">Disable</button>
+                                            {% else %}
+                                                <input type="hidden" name="new_status" value="active">
+                                                <button type="submit" name="toggle_status" class="admin-btn admin-btn-sm admin-btn-green">Activate</button>
+                                            {% endif %}
+                                        </form>
+
+                                        <form method="POST" action="{{ path('admin_staff') }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to permanently delete account {{ member.name|e('js') }}?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin_staff') }}">
+                                            <input type="hidden" name="staff_id" value="{{ member.id }}">
+                                            <button type="submit" name="delete_staff" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<!-- Create / Edit Staff Modal -->
+<div class="admin-modal-overlay" id="staffModal">
+    <div class="admin-modal">
+        <div class="admin-modal-header">
+            <h3>Create Staff / Admin Account</h3>
+            <button type="button" class="admin-modal-close" aria-label="Close">&times;</button>
+        </div>
+        <form method="POST" action="{{ path('admin_staff') }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('admin_staff') }}">
+            <div class="admin-modal-body">
+                <input type="hidden" name="edit_id" value="">
+
+                <div class="form-group">
+                    <label for="staffName">Full Name *</label>
+                    <input type="text" id="staffName" name="name" placeholder="e.g. Maria Santos" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="staffEmail">Username / Email Address *</label>
+                    <input type="email" id="staffEmail" name="email" placeholder="e.g. staff@sunscape.com" required>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <div class="form-group">
+                        <label for="staffRole">System Role *</label>
+                        <select id="staffRole" name="role" required>
+                            <option value="ROLE_STAFF">Staff (ROLE_STAFF)</option>
+                            <option value="ROLE_ADMIN">Admin (ROLE_ADMIN)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="staffStatus">Account Status *</label>
+                        <select id="staffStatus" name="status" required>
+                            <option value="active">Active</option>
+                            <option value="disabled">Disabled</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="staffPassword">Password (Required for new accounts; leave blank when editing to keep current)</label>
+                    <input type="password" id="staffPassword" name="password" minlength="6" placeholder="Minimum 6 characters">
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-btn admin-btn-outline admin-modal-close">Cancel</button>
+                <button type="submit" name="save_staff" class="admin-btn admin-btn-gold">Save Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Admin;
 use App\Entity\Room;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_STAFF')]
 final class RoomController extends AbstractController
 {
     #[Route('/rooms', name: 'admin_rooms', methods: ['GET', 'POST'])]
@@ -21,6 +22,9 @@ final class RoomController extends AbstractController
         RoomRepository $roomRepository,
         EntityManagerInterface $entityManager
     ): Response {
+        /** @var Admin|null $currentAdmin */
+        $currentAdmin = $this->getUser();
+
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('admin_rooms', $request->request->getString('_token'))) {
                 $this->addFlash('error', 'Invalid security token. Please try again.');
@@ -41,6 +45,9 @@ final class RoomController extends AbstractController
                     if ($editId > 0) {
                         $room = $roomRepository->find($editId);
                         if ($room) {
+                            if (!$this->canModifyRecord($room, $currentAdmin)) {
+                                throw $this->createAccessDeniedException('Staff members can only edit their own records.');
+                            }
                             $room->setName($name)
                                 ->setBadge($badge)
                                 ->setBadgeClass($badgeClass)
@@ -59,7 +66,8 @@ final class RoomController extends AbstractController
                             ->setSpecs($specs)
                             ->setPrice($price)
                             ->setDescription($desc !== '' ? $desc : null)
-                            ->setImageUrl($imageUrl);
+                            ->setImageUrl($imageUrl)
+                            ->setCreatedBy($currentAdmin instanceof Admin ? $currentAdmin : null);
                         $entityManager->persist($room);
                         $entityManager->flush();
                         $this->addFlash('success', "Room \"$name\" has been added.");
@@ -75,6 +83,9 @@ final class RoomController extends AbstractController
                 $roomId = $request->request->getInt('room_id');
                 $room = $roomRepository->find($roomId);
                 if ($room) {
+                    if (!$this->canModifyRecord($room, $currentAdmin)) {
+                        throw $this->createAccessDeniedException('Staff members can only delete their own records.');
+                    }
                     $entityManager->remove($room);
                     $entityManager->flush();
                     $this->addFlash('success', 'Room has been deleted.');
@@ -83,11 +94,34 @@ final class RoomController extends AbstractController
             }
         }
 
-        $rooms = $roomRepository->findAll();
+        $searchQuery = trim($request->query->getString('search'));
+        $ownerFilter = $request->query->getString('owner', 'all');
+
+        $rooms = $roomRepository->findAllFiltered(
+            $searchQuery !== '' ? $searchQuery : null,
+            $ownerFilter,
+            $currentAdmin instanceof Admin ? $currentAdmin : null
+        );
 
         return $this->render('admin/rooms.html.twig', [
             'rooms' => $rooms,
+            'searchQuery' => $searchQuery,
+            'ownerFilter' => $ownerFilter,
             'current_page' => 'rooms',
         ]);
+    }
+
+    private function canModifyRecord(Room $room, ?Admin $currentAdmin): bool
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        if (!$currentAdmin instanceof Admin) {
+            return false;
+        }
+
+        $creator = $room->getCreatedBy();
+        return $creator !== null && $creator->getId() === $currentAdmin->getId();
     }
 }

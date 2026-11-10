@@ -36,6 +36,10 @@ class Service
     #[ORM\Column(name: 'image_url', length: 500)]
     private string $imageUrl = '';
 
+    #[ORM\ManyToOne(targetEntity: Admin::class)]
+    #[ORM\JoinColumn(name: 'created_by_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Admin $createdBy = null;
+
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeImmutable $createdAt;
 
@@ -126,6 +130,17 @@ class Service
         return $this;
     }
 
+    public function getCreatedBy(): ?Admin
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?Admin $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
+
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
@@ -137,4 +152,3 @@ class Service
         return $this;
     }
 }
-

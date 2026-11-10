@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_STAFF')]
 final class ReservationController extends AbstractController
 {
     #[Route('/reservations', name: 'admin_reservations', methods: ['GET', 'POST'])]
@@ -40,6 +40,9 @@ final class ReservationController extends AbstractController
             }
 
             if ($request->request->has('delete_reservation')) {
+                if (!$this->isGranted('ROLE_ADMIN')) {
+                    throw $this->createAccessDeniedException('Only administrators can delete reservations.');
+                }
                 $resId = $request->request->getInt('reservation_id');
                 $reservation = $reservationRepository->find($resId);
                 if ($reservation) {

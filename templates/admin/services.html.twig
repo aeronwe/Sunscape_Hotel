@@ -12,9 +12,25 @@
 {% block content %}
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
     <h2 style="font-size:1.1rem; font-weight:700; color:var(--admin-text);">All Services ({{ allServices|length }})</h2>
-    <button class="admin-btn admin-btn-gold" data-modal-open="serviceModal" data-add-title="Add New Service">
-        Add Service
-    </button>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <form method="GET" action="{{ path('admin_services') }}" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <input type="text" name="search" class="admin-search" placeholder="Search service name, tag..." value="{{ searchQuery|default('') }}">
+            <select name="category" class="admin-select">
+                <option value="all" {% if filterCategory|default('all') == 'all' %}selected{% endif %}>All Categories</option>
+                <option value="dining" {% if filterCategory|default('all') == 'dining' %}selected{% endif %}>Dining</option>
+                <option value="experience" {% if filterCategory|default('all') == 'experience' %}selected{% endif %}>Experiences</option>
+                <option value="brand" {% if filterCategory|default('all') == 'brand' %}selected{% endif %}>Brands</option>
+            </select>
+            <select name="owner" class="admin-select">
+                <option value="all" {% if ownerFilter|default('all') == 'all' %}selected{% endif %}>All Records</option>
+                <option value="mine" {% if ownerFilter|default('all') == 'mine' %}selected{% endif %}>My Records Only</option>
+            </select>
+            <button type="submit" class="admin-btn admin-btn-outline">Filter</button>
+        </form>
+        <button type="button" class="admin-btn admin-btn-gold" data-modal-open="serviceModal" data-add-title="Add New Service">
+            + Add Service
+        </button>
+    </div>
 </div>
 
 {% for cat, services in grouped %}
@@ -29,6 +45,7 @@
                 {% for svc in services %}
                     {% set serviceImage = svc.imageUrl|replace({'../../assets/': '', '../assets/': '', 'assets/': ''})|trim('/') %}
                     {% set serviceImageUrl = serviceImage starts with 'http://' or serviceImage starts with 'https://' ? serviceImage : asset(serviceImage starts with 'images/' ? serviceImage : 'images/' ~ serviceImage) %}
+                    {% set canModify = is_granted('ROLE_ADMIN') or (svc.createdBy and app.user and svc.createdBy.id == app.user.id) %}
                     <div class="admin-service-card">
                         <div class="admin-service-img">
                             <img src="{{ serviceImageUrl }}" alt="{{ svc.name }}" loading="lazy">
@@ -45,27 +62,40 @@
                                 <p style="font-size:0.85rem; font-weight:700; color:var(--admin-gold); margin-bottom:8px;">₱{{ svc.price|number_format(2, '.', ',') }}<span style="font-size:0.75rem; font-weight:400; color:var(--admin-text-dim);"> / person</span></p>
                             {% endif %}
                             {% if svc.description %}
-                                <p style="font-size:0.78rem; color:var(--admin-text-dim); margin-bottom:10px; line-height:1.5;">{{ svc.description|length > 100 ? svc.description|slice(0, 100) ~ '...' : svc.description }}</p>
+                                <p style="font-size:0.78rem; color:var(--admin-text-dim); margin-bottom:8px; line-height:1.5;">{{ svc.description|length > 100 ? svc.description|slice(0, 100) ~ '...' : svc.description }}</p>
                             {% endif %}
+                            <p style="font-size:0.74rem; color:var(--admin-text-dim); margin:4px 0 10px;">
+                                Created by:
+                                {% if svc.createdBy %}
+                                    <strong>{{ svc.createdBy.name }}</strong>
+                                    ({{ svc.createdBy.role == 'ROLE_ADMIN' ? 'Admin' : 'Staff' }})
+                                {% else %}
+                                    <strong>System Admin</strong>
+                                {% endif %}
+                            </p>
                             <div class="admin-service-actions">
-                                <button class="admin-btn admin-btn-sm admin-btn-blue"
-                                    data-modal-open="serviceModal"
-                                    data-edit-id="{{ svc.id }}"
-                                    data-edit-title="Edit Service"
-                                    data-field-category="{{ svc.category }}"
-                                    data-field-name="{{ svc.name }}"
-                                    data-field-tag="{{ svc.tag|default('') }}"
-                                    data-field-description="{{ svc.description|default('') }}"
-                                    data-field-hours="{{ svc.hours|default('') }}"
-                                    data-field-price="{{ svc.price }}"
-                                    data-field-image_url="{{ svc.imageUrl }}">
-                                    Edit
-                                </button>
-                                <form method="POST" action="{{ path('admin_services') }}" style="display:inline;" onsubmit="return confirm('Delete this service?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('admin_services') }}">
-                                    <input type="hidden" name="service_id" value="{{ svc.id }}">
-                                    <button type="submit" name="delete_service" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
-                                </form>
+                                {% if canModify %}
+                                    <button type="button" class="admin-btn admin-btn-sm admin-btn-blue"
+                                        data-modal-open="serviceModal"
+                                        data-edit-id="{{ svc.id }}"
+                                        data-edit-title="Edit Service"
+                                        data-field-category="{{ svc.category }}"
+                                        data-field-name="{{ svc.name }}"
+                                        data-field-tag="{{ svc.tag|default('') }}"
+                                        data-field-description="{{ svc.description|default('') }}"
+                                        data-field-hours="{{ svc.hours|default('') }}"
+                                        data-field-price="{{ svc.price }}"
+                                        data-field-image_url="{{ svc.imageUrl }}">
+                                        Edit
+                                    </button>
+                                    <form method="POST" action="{{ path('admin_services') }}" style="display:inline;" onsubmit="return confirm('Delete this service?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin_services') }}">
+                                        <input type="hidden" name="service_id" value="{{ svc.id }}">
+                                        <button type="submit" name="delete_service" class="admin-btn admin-btn-sm admin-btn-red">Delete</button>
+                                    </form>
+                                {% else %}
+                                    <span class="status-badge status-pending" title="Staff can only edit or delete their own records.">View Only</span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -82,7 +112,7 @@
     <div class="admin-modal">
         <div class="admin-modal-header">
             <h3>Add New Service</h3>
-            <button class="admin-modal-close" aria-label="Close">&times;</button>
+            <button type="button" class="admin-modal-close" aria-label="Close">&times;</button>
         </div>
         <form method="POST" action="{{ path('admin_services') }}">
             <input type="hidden" name="_token" value="{{ csrf_token('admin_services') }}">

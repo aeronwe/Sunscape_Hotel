@@ -48,4 +48,30 @@ class AdminRepository extends ServiceEntityRepository implements PasswordUpgrade
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @return Admin[]
+     */
+    public function findAllFiltered(?string $role = null, ?string $status = null, ?string $search = null): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->orderBy('a.createdAt', 'DESC');
+
+        if ($role && $role !== 'all') {
+            $qb->andWhere('a.role = :role')
+               ->setParameter('role', $role);
+        }
+
+        if ($status && $status !== 'all') {
+            $qb->andWhere('a.status = :status')
+               ->setParameter('status', $status);
+        }
+
+        if ($search && trim($search) !== '') {
+            $qb->andWhere('LOWER(a.name) LIKE LOWER(:search) OR LOWER(a.email) LIKE LOWER(:search)')
+               ->setParameter('search', '%' . trim($search) . '%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

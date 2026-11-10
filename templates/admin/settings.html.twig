@@ -1,15 +1,45 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Account Settings | Admin Panel{% endblock %}
-{% block topbar_title %}Admin Account &amp; Security Settings{% endblock %}
+{% block title %}My Profile &amp; Account Settings | Management Panel{% endblock %}
+{% block topbar_title %}My Profile &amp; Account Settings{% endblock %}
 
 {% block content %}
-<!-- Superadmin Security Notice -->
+<!-- Account Profile Overview Card -->
+{% if currentAdmin %}
+<div class="admin-panel" style="margin-bottom: 24px;">
+    <div class="panel-header">
+        <span class="panel-title">My Account Profile</span>
+        <span class="status-badge {{ currentAdmin.role == 'ROLE_ADMIN' ? 'status-confirmed' : 'status-pending' }}">
+            {{ currentAdmin.role == 'ROLE_ADMIN' ? 'Administrator (ROLE_ADMIN)' : 'Staff Member (ROLE_STAFF)' }}
+        </span>
+    </div>
+    <div style="padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+        <div>
+            <small style="color: var(--admin-text-dim); display: block; font-size: 0.75rem;">Display Name</small>
+            <strong style="font-size: 0.95rem;">{{ currentAdmin.name }}</strong>
+        </div>
+        <div>
+            <small style="color: var(--admin-text-dim); display: block; font-size: 0.75rem;">Username / Email</small>
+            <strong style="font-size: 0.95rem;">{{ currentAdmin.email }}</strong>
+        </div>
+        <div>
+            <small style="color: var(--admin-text-dim); display: block; font-size: 0.75rem;">Account Status</small>
+            <span class="status-badge {{ currentAdmin.status == 'active' ? 'status-confirmed' : 'status-cancelled' }}">{{ currentAdmin.status|capitalize }}</span>
+        </div>
+        <div>
+            <small style="color: var(--admin-text-dim); display: block; font-size: 0.75rem;">Date Created</small>
+            <strong style="font-size: 0.95rem;">{{ currentAdmin.createdAt ? currentAdmin.createdAt|date('M d, Y') : '—' }}</strong>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Security Notice -->
 <div class="superadmin-banner">
     <div>
-        <strong>Superadmin Protected Security Area</strong>
+        <strong>Protected Account Security Area</strong>
         <div style="font-size: 12px; margin-top: 3px; color: #6d5203;">
-            To protect the resort system from unauthorized tampering, modifying the admin username, display name, or password requires the <strong>Superadmin Password</strong>.
+            To protect your account from unauthorized changes, updating your display name, email, or password requires your <strong>Current Password</strong>.
         </div>
     </div>
 </div>
@@ -28,20 +58,20 @@
                 <div class="form-group">
                     <label for="adminDisplayName">Display Name</label>
                     <input type="text" id="adminDisplayName" name="name" value="{{ currentAdmin ? currentAdmin.name : '' }}" required placeholder="e.g. Resort Administrator">
-                    <small style="display:block; margin-top:4px; color:#6c757d; font-size:12px;">This name appears in the top navigation bar and dashboard.</small>
+                    <small style="display:block; margin-top:4px; color:#6c757d; font-size:12px;">This name appears in the top navigation bar and on records you create.</small>
                 </div>
 
                 <div class="form-group">
                     <label for="adminEmailField">Username / Email Address</label>
                     <input type="text" id="adminEmailField" name="email" value="{{ currentAdmin ? currentAdmin.email : '' }}" required placeholder="e.g. admin or admin@sunscape.com">
-                    <small style="display:block; margin-top:4px; color:#6c757d; font-size:12px;">Used to sign in to the Admin Panel.</small>
+                    <small style="display:block; margin-top:4px; color:#6c757d; font-size:12px;">Used to sign in to the Management Panel.</small>
                 </div>
 
                 <div class="superadmin-field">
                     <label for="superadminPassProfile" style="color:#b23b00; font-weight:bold; font-size:13px; margin-bottom:6px; display:block;">
-                        Current Admin Password (Required)
+                        Current Password (Required)
                     </label>
-                    <input type="password" id="superadminPassProfile" name="superadmin_password" required placeholder="Enter superadmin password to confirm" style="background:#fff; border-color:#d39e00;">
+                    <input type="password" id="superadminPassProfile" name="superadmin_password" required placeholder="Enter current password to confirm" style="background:#fff; border-color:#d39e00;">
                 </div>
 
                 <button type="submit" class="admin-btn admin-btn-primary" style="width:100%; padding:10px; font-weight:bold;">
@@ -54,7 +84,7 @@
     <!-- Password Card -->
     <div class="admin-panel">
         <div class="panel-header">
-            <span class="panel-title">Change Password</span>
+            <span class="panel-title">Change Own Password</span>
         </div>
         <div style="padding: 20px;">
             <form method="POST" action="{{ path('admin_settings') }}">
@@ -73,9 +103,9 @@
 
                 <div class="superadmin-field">
                     <label for="superadminPassPassword" style="color:#b23b00; font-weight:bold; font-size:13px; margin-bottom:6px; display:block;">
-                        Current Admin Password (Required)
+                        Current Password (Required)
                     </label>
-                    <input type="password" id="superadminPassPassword" name="superadmin_password" required placeholder="Enter superadmin password to confirm" style="background:#fff; border-color:#d39e00;">
+                    <input type="password" id="superadminPassPassword" name="superadmin_password" required placeholder="Enter current password to confirm" style="background:#fff; border-color:#d39e00;">
                 </div>
 
                 <button type="submit" class="admin-btn admin-btn-primary" style="width:100%; padding:10px; font-weight:bold;">

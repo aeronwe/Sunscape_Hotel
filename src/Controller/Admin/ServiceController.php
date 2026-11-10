@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Admin;
 use App\Entity\Service;
 use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_STAFF')]
 final class ServiceController extends AbstractController
 {
     #[Route('/services', name: 'admin_services', methods: ['GET', 'POST'])]
@@ -21,6 +22,9 @@ final class ServiceController extends AbstractController
         ServiceRepository $serviceRepository,
         EntityManagerInterface $entityManager
     ): Response {
+        /** @var Admin|null $currentAdmin */
+        $currentAdmin = $this->getUser();
+
         if ($request->isMethod('POST')) {
             if (!$this->isCsrfTokenValid('admin_services', $request->request->getString('_token'))) {
                 $this->addFlash('error', 'Invalid security token. Please try again.');
@@ -42,6 +46,9 @@ final class ServiceController extends AbstractController
                     if ($editId > 0) {
                         $service = $serviceRepository->find($editId);
                         if ($service) {
+                            if (!$this->canModifyRecord($service, $currentAdmin)) {
+                                throw $this->createAccessDeniedException('Staff members can only edit their own records.');
+                            }
                             $service->setCategory($category)
                                 ->setName($name)
                                 ->setTag($tag !== '' ? $tag : null)
@@ -60,7 +67,8 @@ final class ServiceController extends AbstractController
                             ->setDescription($desc !== '' ? $desc : null)
                             ->setHours($hours !== '' ? $hours : null)
                             ->setPrice($price)
-                            ->setImageUrl($imageUrl);
+                            ->setImageUrl($imageUrl)
+                            ->setCreatedBy($currentAdmin instanceof Admin ? $currentAdmin : null);
                         $entityManager->persist($service);
                         $entityManager->flush();
                         $this->addFlash('success', "Service \"$name\" has been added.");
@@ -76,6 +84,9 @@ final class ServiceController extends AbstractController
                 $serviceId = $request->request->getInt('service_id');
                 $service = $serviceRepository->find($serviceId);
                 if ($service) {
+                    if (!$this->canModifyRecord($service, $currentAdmin)) {
+                        throw $this->createAccessDeniedException('Staff members can only delete their own records.');
+                    }
                     $entityManager->remove($service);
                     $entityManager->flush();
                     $this->addFlash('success', 'Service has been deleted.');
@@ -84,7 +95,16 @@ final class ServiceController extends AbstractController
             }
         }
 
-        $allServices = $serviceRepository->findAll();
+        $filterCategory = $request->query->getString('category', 'all');
+        $searchQuery = trim($request->query->getString('search'));
+        $ownerFilter = $request->query->getString('owner', 'all');
+
+        $allServices = $serviceRepository->findAllFiltered(
+            $filterCategory !== 'all' ? $filterCategory : null,
+            $searchQuery !== '' ? $searchQuery : null,
+            $ownerFilter,
+            $currentAdmin instanceof Admin ? $currentAdmin : null
+        );
 
         $grouped = [
             'dining' => [],
@@ -103,7 +123,24 @@ final class ServiceController extends AbstractController
         return $this->render('admin/services.html.twig', [
             'allServices' => $allServices,
             'grouped' => $grouped,
+            'filterCategory' => $filterCategory,
+            'searchQuery' => $searchQuery,
+            'ownerFilter' => $ownerFilter,
             'current_page' => 'services',
         ]);
+    }
+
+    private function canModifyRecord(Service $service, ?Admin $currentAdmin): bool
+    {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        if (!$currentAdmin instanceof Admin) {
+            return false;
+        }
+
+        $creator = $service->getCreatedBy();
+        return $creator !== null && $creator->getId() === $currentAdmin->getId();
     }
 }

@@ -17,11 +17,11 @@ final class SecurityController extends AbstractController
     #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('account_index');
-        }
-
         $redirect = $request->query->getString('redirect', '');
+
+        if ($this->getUser()) {
+            return $this->redirectToRoute($redirect === 'booking' ? 'booking_index' : 'account_index');
+        }
 
         return $this->render('security/login.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
@@ -105,7 +105,7 @@ final class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'app_logout', methods: ['POST'])]
+    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout(): never
     {
         throw new \LogicException('Intercepted by the firewall.');

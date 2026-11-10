@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Admin;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -33,8 +34,6 @@ class RoomRepository extends ServiceEntityRepository
 
     /**
      * Find a single room whose derived slug matches $slug.
-     * Since the slug is computed from the name, we fetch all and filter in PHP
-     * (the rooms table is small; add a slug column later for large datasets).
      */
     public function findBySlug(string $slug): ?Room
     {
@@ -47,5 +46,27 @@ class RoomRepository extends ServiceEntityRepository
 
         return null;
     }
-}
 
+    /**
+     * @return Room[]
+     */
+    public function findAllFiltered(?string $search = null, ?string $ownerFilter = null, ?Admin $currentAdmin = null): array
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.createdBy', 'c')
+            ->addSelect('c')
+            ->orderBy('r.id', 'ASC');
+
+        if ($search && trim($search) !== '') {
+            $qb->andWhere('LOWER(r.name) LIKE LOWER(:search) OR LOWER(r.badge) LIKE LOWER(:search) OR LOWER(r.specs) LIKE LOWER(:search)')
+               ->setParameter('search', '%' . trim($search) . '%');
+        }
+
+        if ($ownerFilter === 'mine' && $currentAdmin) {
+            $qb->andWhere('r.createdBy = :creator')
+               ->setParameter('creator', $currentAdmin);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+}

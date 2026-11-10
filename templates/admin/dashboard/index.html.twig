@@ -1,15 +1,51 @@
 {% extends 'admin/base.html.twig' %}
 
 {% block title %}Dashboard | Admin Panel{% endblock %}
-{% block topbar_title %}Dashboard{% endblock %}
+{% block topbar_title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<!-- Stats -->
-<div class="stats-grid">
+<!-- System Overview (Rubric Metrics: Total Users, Total Staff, Total Records) -->
+<div class="stats-grid" style="margin-bottom: 20px;">
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Total Users (Guests)</div>
+            <div class="stat-value">{{ stats.total_users }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Total Staff &amp; Admins</div>
+            <div class="stat-value">{{ stats.total_staff }}</div>
+            <small style="color: var(--admin-text-dim); font-size: 0.75rem;">{{ stats.admin_count }} Admin · {{ stats.staff_only_count }} Staff</small>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Total Records</div>
+            <div class="stat-value">{{ stats.total_records }}</div>
+            <small style="color: var(--admin-text-dim); font-size: 0.75rem;">Rooms, Services &amp; Bookings</small>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Confirmed Revenue</div>
+            <div class="stat-value">₱{{ stats.total_revenue|number_format(0, '.', ',') }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Resort Breakdown Stats -->
+<div class="stats-grid" style="margin-bottom: 36px;">
     <div class="stat-card">
         <div class="stat-info">
             <div class="stat-label">Total Rooms</div>
             <div class="stat-value">{{ stats.total_rooms }}</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-info">
+            <div class="stat-label">Services &amp; Experiences</div>
+            <div class="stat-value">{{ stats.total_services }}</div>
         </div>
     </div>
     <div class="stat-card">
@@ -20,36 +56,8 @@
     </div>
     <div class="stat-card">
         <div class="stat-info">
-            <div class="stat-label">Pending</div>
-            <div class="stat-value">{{ stats.pending_reservations }}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-info">
-            <div class="stat-label">Revenue</div>
-            <div class="stat-value">₱{{ stats.total_revenue|number_format(0, '.', ',') }}</div>
-        </div>
-    </div>
-</div>
-
-<!-- Secondary Stats -->
-<div class="stats-grid" style="margin-bottom: 36px;">
-    <div class="stat-card">
-        <div class="stat-info">
-            <div class="stat-label">Registered Guests</div>
-            <div class="stat-value">{{ stats.total_guests }}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-info">
-            <div class="stat-label">Today's Check-ins</div>
-            <div class="stat-value">{{ stats.today_checkins }}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-info">
-            <div class="stat-label">Services</div>
-            <div class="stat-value">{{ stats.total_services }}</div>
+            <div class="stat-label">Pending / Today Check-ins</div>
+            <div class="stat-value">{{ stats.pending_reservations }} / {{ stats.today_checkins }}</div>
         </div>
     </div>
 </div>
@@ -58,7 +66,10 @@
 <div class="admin-panel">
     <div class="panel-header">
         <h2 class="panel-title">Recent Reservations</h2>
-        <a href="{{ path('admin_reservations') }}" class="admin-btn admin-btn-outline">View All &rarr;</a>
+        <div style="display:flex; gap:8px;">
+            <a href="{{ path('admin_staff') }}" class="admin-btn admin-btn-gold">Manage Staff &rarr;</a>
+            <a href="{{ path('admin_reservations') }}" class="admin-btn admin-btn-outline">View All Reservations &rarr;</a>
+        </div>
     </div>
     <div class="admin-table-wrap">
         <table class="admin-table">

@@ -12,6 +12,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: 'admins')]
 class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_STAFF = 'ROLE_STAFF';
+
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_DISABLED = 'disabled';
+    public const STATUS_ARCHIVED = 'archived';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER, options: ['unsigned' => true])]
@@ -25,6 +32,12 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private string $password = '';
+
+    #[ORM\Column(length: 30, options: ['default' => self::ROLE_ADMIN])]
+    private string $role = self::ROLE_ADMIN;
+
+    #[ORM\Column(length: 30, options: ['default' => self::STATUS_ACTIVE])]
+    private string $status = self::STATUS_ACTIVE;
 
     #[ORM\Column(name: 'created_at', type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private \DateTimeImmutable $createdAt;
@@ -66,9 +79,50 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
+    public function getRole(): string
+    {
+        return $this->role === self::ROLE_STAFF ? self::ROLE_STAFF : self::ROLE_ADMIN;
+    }
+
+    public function setRole(string $role): static
+    {
+        $this->role = in_array($role, [self::ROLE_ADMIN, self::ROLE_STAFF], true)
+            ? $role
+            : self::ROLE_STAFF;
+        return $this;
+    }
+
     public function getRoles(): array
     {
-        return ['ROLE_ADMIN'];
+        return [$this->getRole()];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->getRole() === self::ROLE_ADMIN;
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->getRole() === self::ROLE_STAFF;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = in_array($status, [self::STATUS_ACTIVE, self::STATUS_DISABLED, self::STATUS_ARCHIVED], true)
+            ? $status
+            : self::STATUS_ACTIVE;
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
     }
 
     public function getPassword(): string
@@ -97,4 +151,3 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 }
-

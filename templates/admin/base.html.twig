@@ -22,30 +22,35 @@
             </div>
             <div class="sidebar-brand">
                 Sunscape Resort
-                <small>Management</small>
+                <small>{{ is_granted('ROLE_ADMIN') ? 'Admin Portal' : 'Staff Portal' }}</small>
             </div>
         </div>
 
         <nav class="sidebar-nav">
-            <div class="sidebar-nav-label">Main</div>
-            <a href="{{ path('admin_dashboard') }}" class="sidebar-link {% if current_page|default('') == 'dashboard' %}active{% endif %}">
-                Dashboard
-            </a>
-            <a href="{{ path('admin_reservations') }}" class="sidebar-link {% if current_page|default('') == 'reservations' %}active{% endif %}">
-                Reservations
-            </a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <div class="sidebar-nav-label">Admin Overview</div>
+                <a href="{{ path('admin_dashboard') }}" class="sidebar-link {% if current_page|default('') == 'dashboard' %}active{% endif %}">
+                    Dashboard
+                </a>
+                <a href="{{ path('admin_staff') }}" class="sidebar-link {% if current_page|default('') == 'staff' %}active{% endif %}">
+                    Staff Management
+                </a>
+            {% endif %}
 
-            <div class="sidebar-nav-label">Manage</div>
+            <div class="sidebar-nav-label">Records &amp; Bookings</div>
             <a href="{{ path('admin_rooms') }}" class="sidebar-link {% if current_page|default('') == 'rooms' %}active{% endif %}">
                 Rooms
             </a>
             <a href="{{ path('admin_services') }}" class="sidebar-link {% if current_page|default('') == 'services' %}active{% endif %}">
                 Services &amp; Schedules
             </a>
+            <a href="{{ path('admin_reservations') }}" class="sidebar-link {% if current_page|default('') == 'reservations' %}active{% endif %}">
+                Reservations
+            </a>
 
-            <div class="sidebar-nav-label">System</div>
+            <div class="sidebar-nav-label">Account</div>
             <a href="{{ path('admin_settings') }}" class="sidebar-link {% if current_page|default('') == 'settings' %}active{% endif %}">
-                Admin Settings
+                My Profile &amp; Password
             </a>
         </nav>
 
@@ -69,6 +74,9 @@
             <div class="topbar-right">
                 {% set adminName = app.user ? app.user.name : 'Admin' %}
                 {% set adminInitial = adminName|slice(0, 1)|upper %}
+                <span class="status-badge {{ is_granted('ROLE_ADMIN') ? 'status-confirmed' : 'status-pending' }}" style="margin-right: 6px;">
+                    {{ is_granted('ROLE_ADMIN') ? 'Admin' : 'Staff' }}
+                </span>
                 <a href="{{ path('admin_settings') }}" class="topbar-admin-name" style="text-decoration:none; color:inherit;">{{ adminName }}</a>
                 <a href="{{ path('admin_settings') }}" class="topbar-avatar" style="text-decoration:none;" title="Account Settings">{{ adminInitial }}</a>
             </div>

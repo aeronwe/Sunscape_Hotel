@@ -101,6 +101,8 @@
                     </div>
 
                     <input type="hidden" name="_target_path" value="{{ redirect == 'booking' ? path('booking_index') : path('account_index') }}">
+                    {# Keep ?redirect=… on a failed attempt so the next successful login still lands on the right page #}
+                    <input type="hidden" name="_failure_path" value="{{ redirect ? path('app_login', {redirect: redirect}) : path('app_login') }}">
 
                     <button type="submit" class="auth-btn-primary" id="loginBtn">Sign In</button>
                     <p class="auth-switch-text">Don't have an account? <a href="{{ path('app_register', {redirect: redirect}) }}">Sign Up</a></p>

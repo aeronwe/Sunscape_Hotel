@@ -13,13 +13,14 @@
     font-family: 'Manrope', sans-serif;
     background: radial-gradient(circle at 50% 30%, #46583A 0%, #2A3522 100%);
     min-height: 100vh;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px 20px;
+    padding: 20px;
     color: #262E1F;
     position: relative;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 /* ---------- decorative palm trees ---------- */
@@ -90,7 +91,9 @@
 
 .auth-card {
     width: 100%;
-    max-width: 980px;
+    max-width: 860px;
+    min-width: 0;
+    max-height: calc(100vh - 40px);
     display: flex;
     flex-direction: column;
     background: #F3EEE0;
@@ -115,7 +118,7 @@
 .auth-card-body {
     display: flex;
     flex: 1;
-    min-height: 600px;
+    min-height: 0;
 }
 
 /* ---------- left panel : branding ---------- */
@@ -128,14 +131,14 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 48px 34px;
+    padding: 22px 24px;
     position: relative;
     border-right: 1px solid #E2D3AC;
 }
 
 .auth-resort-logo {
-    width: 180px;
-    margin-bottom: 20px;
+    width: 125px;
+    margin-bottom: 10px;
     filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.15));
 }
 
@@ -144,7 +147,7 @@
     font-weight: 700;
     font-size: 1.3rem;
     letter-spacing: 5px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     text-transform: uppercase;
     color: #34432A;
 }
@@ -162,8 +165,8 @@
 .auth-wave {
     width: 100%;
     max-width: 260px;
-    margin: 24px 0;
-    opacity: 0.5;
+    margin: 14px 0;
+    opacity: 1;
 }
 
 .auth-greek-line {
@@ -187,7 +190,8 @@
 /* ---------- right panel : form ---------- */
 .auth-panel-form {
     flex: 1;
-    padding: 48px 56px;
+    min-width: 0;
+    padding: 24px 38px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -201,7 +205,7 @@
     background: rgba(226, 211, 172, 0.4);
     border-radius: 50px;
     padding: 5px;
-    margin-bottom: 34px;
+    margin-bottom: 22px;
 }
 
 .auth-tab {
@@ -249,7 +253,7 @@
 .auth-form {
     display: flex;
     flex-direction: column;
-    gap: 17px;
+    gap: 12px;
     animation: authFadeInUp 0.45s ease both;
 }
 
@@ -309,7 +313,7 @@
 
 .auth-input-wrap input {
     width: 100%;
-    padding: 13px 14px 13px 42px;
+    padding: 10px 14px 10px 42px;
     border: 1.5px solid #E2D3AC;
     border-radius: 12px;
     font-family: 'Manrope', sans-serif;
@@ -452,7 +456,7 @@
 
 /* ---------- primary button ---------- */
 .auth-btn-primary {
-    padding: 14px;
+    padding: 11px;
     border: none;
     border-radius: 12px;
     background: #34432A;

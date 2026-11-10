@@ -16,7 +16,8 @@ security:
                 class: App\Entity\Admin
 
     role_hierarchy:
-        ROLE_ADMIN: [ROLE_USER]
+        ROLE_ADMIN: [ROLE_STAFF, ROLE_USER]
+        ROLE_STAFF: [ROLE_USER]
 
     firewalls:
         dev:
@@ -27,10 +28,12 @@ security:
             pattern: ^/admin
             lazy: true
             provider: admin_user_provider
+            user_checker: App\Security\AdminUserChecker
             form_login:
                 login_path: admin_login
                 check_path: admin_login
                 default_target_path: admin_dashboard
+                success_handler: App\Security\AdminLoginSuccessHandler
                 username_parameter: email
                 password_parameter: password
                 enable_csrf: true
@@ -56,7 +59,9 @@ security:
     # Note: Only the *first* matching rule is applied
     access_control:
         - { path: ^/admin/login, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin/staff, roles: ROLE_ADMIN }
+        - { path: ^/admin/?$, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_STAFF }
         - { path: ^/account, roles: ROLE_USER }
 
 when@test:

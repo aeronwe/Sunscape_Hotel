@@ -15,6 +15,9 @@ final class SecurityController extends AbstractController
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('admin_dashboard');
         }
+        if ($this->isGranted('ROLE_STAFF')) {
+            return $this->redirectToRoute('admin_rooms');
+        }
 
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
