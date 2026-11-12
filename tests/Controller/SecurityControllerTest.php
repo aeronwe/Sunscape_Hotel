@@ -10,6 +10,18 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityControllerTest extends WebTestCase
 {
+    public function testMainLoginOffersSubtleAdminLoginLink(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/login');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertSame(
+            '/admin/login',
+            $crawler->filter('.auth-admin-link a')->attr('href'),
+        );
+    }
+
     public function testRegistrationFlow(): void
     {
         $client = static::createClient();

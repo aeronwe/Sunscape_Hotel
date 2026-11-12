@@ -31,13 +31,29 @@
             <span class="brand-text">Ejercito's Sunscape Resort</span>
         </a>
 
-        <ul class="navbar-links">
+        <ul class="navbar-links" id="mainNavigation">
+            <li class="mobile-menu-header">
+                <a href="{{ path('home') }}" class="mobile-menu-brand">
+                    <img src="{{ asset('images/LGO.svg') }}" alt="Ejercito's Sunscape Resort logo">
+                    <span>Ejercito's Sunscape Resort</span>
+                </a>
+                <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu" type="button">
+                    <span></span><span></span><span></span>
+                </button>
+            </li>
             <li><a href="{{ path('home') }}" class="{{ app.current_route == 'home' ? 'active' : '' }}">Home</a></li>
             <li><a href="{{ path('room_index') }}" class="{{ app.current_route starts with 'room' ? 'active' : '' }}">Rooms</a></li>
             <li><a href="{{ path('booking_index') }}" class="{{ app.current_route starts with 'booking' ? 'active' : '' }}">Booking</a></li>
             <li><a href="{{ path('dining_index') }}" class="{{ app.current_route starts with 'dining' ? 'active' : '' }}">Dining</a></li>
             <li><a href="{{ path('experience_index') }}" class="{{ app.current_route starts with 'experience' ? 'active' : '' }}">Experiences</a></li>
             <li><a href="{{ path('contact_index') }}" class="{{ app.current_route starts with 'contact' ? 'active' : '' }}">Contact</a></li>
+            <li class="navbar-mobile-account">
+                {% if app.user %}
+                    <a href="{{ path('account_index') }}">My Account</a>
+                {% else %}
+                    <a href="{{ path('app_login') }}">Login</a>
+                {% endif %}
+            </li>
         </ul>
 
         <a href="{{ path('booking_index') }}" class="btn-book-now">Book Now</a>
@@ -48,11 +64,12 @@
             <a href="{{ path('app_login') }}" class="btn-login">Login</a>
         {% endif %}
 
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-controls="mainNavigation" aria-expanded="false" type="button">
             <span></span><span></span><span></span>
         </button>
     </div>
 </nav>
+<div class="mobile-menu-backdrop" id="mobileMenuBackdrop" aria-hidden="true"></div>
 
 {# ── Page content ── #}
 {% block body %}{% endblock %}

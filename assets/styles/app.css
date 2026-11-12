@@ -168,6 +168,18 @@ img {
     color: var(--color-gold-light);
 }
 
+.navbar-mobile-account {
+    display: none;
+}
+
+.mobile-menu-header {
+    display: none;
+}
+
+.mobile-menu-backdrop {
+    display: none;
+}
+
 .btn-book-now {
     background: var(--color-forest-light);
     color: var(--color-cream);
@@ -309,21 +321,104 @@ img {
 
     .navbar-links.open {
         display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: calc(100% - 24px);
+        height: 100dvh;
+        max-height: 100dvh;
+        box-sizing: border-box;
+        overflow-y: auto;
+        align-items: stretch;
+        padding: 24px 28px 32px;
+        background: var(--color-cream);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+        z-index: 1001;
     }
 
     .navbar-links li {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 10px 0;
+        border-bottom: 1px solid rgba(52, 67, 42, 0.12);
+        padding: 17px 0;
+    }
+
+    .navbar-links .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        border-bottom: 1px solid rgba(52, 67, 42, 0.16);
+        padding: 0 0 20px;
+        margin-bottom: 16px;
+    }
+
+    .mobile-menu-brand {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .mobile-menu-brand img {
+        width: 58px;
+        height: 68px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-brand span {
+        font-family: var(--font-display);
+        font-size: 0.8rem !important;
+        line-height: 1.2;
+        letter-spacing: 1.2px !important;
+        text-transform: uppercase;
+    }
+
+    .mobile-menu-close {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 32px;
+        height: 32px;
+        padding: 4px;
+        justify-content: center;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .mobile-menu-close span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--color-forest-dark);
+    }
+
+    .mobile-menu-close span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .mobile-menu-close span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-menu-close span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
     }
 
     .navbar-links li:last-child {
         border-bottom: none;
     }
 
+    .navbar-mobile-account {
+        display: block;
+    }
+
     .navbar-links a {
+        display: block;
         font-size: 1rem;
-        color: var(--color-cream) !important;
-        font-weight: 500;
+        color: var(--color-forest-dark) !important;
+        font-weight: 600;
         letter-spacing: 0.5px;
     }
 
@@ -338,6 +433,48 @@ img {
 
     .menu-toggle {
         display: flex;
+    }
+
+    .menu-toggle.open span {
+        background: var(--color-forest-dark);
+    }
+
+    .menu-toggle.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.open span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-menu-backdrop {
+        position: fixed;
+        inset: 0;
+        display: block;
+        background: rgba(18, 27, 16, 0.58);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: 1000;
+    }
+
+    .mobile-menu-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    body.mobile-menu-open {
+        overflow: hidden;
+    }
+
+    body.mobile-menu-open .navbar {
+        width: calc(100% - 24px);
+        background: var(--color-cream);
+        z-index: 1002;
     }
 }
 
@@ -3042,6 +3179,10 @@ img {
 @media (max-width: 768px) {
     .navbar-links {
         display: none;
+    }
+
+    .navbar-links.open {
+        display: flex;
     }
 
     .menu-toggle {

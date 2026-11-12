@@ -58,4 +58,30 @@ class PublicPagesTest extends WebTestCase
         $client->followRedirect();
         $this->assertSelectorTextContains('.alert-success', 'Thank you for your message');
     }
+
+    public function testMobileNavigationIncludesAccountLoginLink(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertCount(1, $crawler->filter('.mobile-menu-header'));
+        $this->assertSame('mainNavigation', $crawler->filter('#menuToggle')->attr('aria-controls'));
+        $this->assertSame('false', $crawler->filter('#menuToggle')->attr('aria-expanded'));
+        $this->assertSame('mobileMenuClose', $crawler->filter('.mobile-menu-close')->attr('id'));
+        $this->assertSame('Ejercito\'s Sunscape Resort logo', $crawler->filter('.mobile-menu-brand img')->attr('alt'));
+        $this->assertSame(
+            '/login',
+            $crawler->filter('.navbar-mobile-account a')->attr('href'),
+        );
+    }
+
+    public function testHomepageDoesNotShowUnrelatedBoholSeaCafe(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringNotContainsString('Bohol Sea Cafe', $client->getResponse()->getContent());
+    }
 }

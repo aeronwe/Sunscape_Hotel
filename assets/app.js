@@ -37,11 +37,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mobile menu toggle
     const menuToggle = document.getElementById('menuToggle');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
     const navLinks = document.querySelector('.navbar-links');
+    const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+
+    const setMobileMenuState = (isOpen) => {
+        navLinks?.classList.toggle('open', isOpen);
+        mobileMenuBackdrop?.classList.toggle('open', isOpen);
+        menuToggle?.classList.toggle('open', isOpen);
+        menuToggle?.setAttribute('aria-expanded', String(isOpen));
+        menuToggle?.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        document.body.classList.toggle('mobile-menu-open', isOpen);
+    };
 
     menuToggle?.addEventListener('click', () => {
-        navLinks?.classList.toggle('open');
+        const isOpen = navLinks?.classList.toggle('open') ?? false;
+        setMobileMenuState(isOpen);
     });
+
+    mobileMenuClose?.addEventListener('click', () => setMobileMenuState(false));
+    mobileMenuBackdrop?.addEventListener('click', () => setMobileMenuState(false));
 
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

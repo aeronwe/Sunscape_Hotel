@@ -498,6 +498,22 @@
     text-decoration: underline;
 }
 
+.auth-admin-link {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #8A927E;
+    margin: -4px 0 0;
+}
+
+.auth-admin-link a {
+    color: #6B7F52;
+    text-decoration: none;
+}
+
+.auth-admin-link a:hover {
+    text-decoration: underline;
+}
+
 /* ---------- accessibility ---------- */
 .auth-body a:focus-visible,
 .auth-body button:focus-visible,
