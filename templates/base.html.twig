@@ -48,7 +48,11 @@
             <li><a href="{{ path('experience_index') }}" class="{{ app.current_route starts with 'experience' ? 'active' : '' }}">Experiences</a></li>
             <li><a href="{{ path('contact_index') }}" class="{{ app.current_route starts with 'contact' ? 'active' : '' }}">Contact</a></li>
             <li class="navbar-mobile-account">
-                {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}">Dashboard</a>
+                {% elseif is_granted('ROLE_STAFF') %}
+                    <a href="{{ path('admin_rooms') }}">Staff Portal</a>
+                {% elseif app.user %}
                     <a href="{{ path('account_index') }}">My Account</a>
                 {% else %}
                     <a href="{{ path('app_login') }}">Login</a>
@@ -58,7 +62,11 @@
 
         <a href="{{ path('booking_index') }}" class="btn-book-now">Book Now</a>
 
-        {% if app.user %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin_dashboard') }}" class="btn-login">Dashboard</a>
+        {% elseif is_granted('ROLE_STAFF') %}
+            <a href="{{ path('admin_rooms') }}" class="btn-login">Staff Portal</a>
+        {% elseif app.user %}
             <a href="{{ path('account_index') }}" class="btn-login">My Account</a>
         {% else %}
             <a href="{{ path('app_login') }}" class="btn-login">Login</a>
@@ -105,7 +113,7 @@
                     <li><a href="{{ path('dining_index') }}">Dining &amp; Cuisines</a></li>
                     <li><a href="{{ path('experience_index') }}">Experiences</a></li>
                     <li><a href="{{ path('contact_index') }}">Contact Us</a></li>
-                    <li><a href="{{ path('admin_login') }}">Staff Login</a></li>
+                    <li><a href="{{ path('app_login') }}">Login</a></li>
                 </ul>
             </div>
 
@@ -137,12 +145,6 @@
 
         <div class="footer-bottom">
             <p>&copy; {{ "now"|date("Y") }} Ejercito's Sunscape Resort. All rights reserved.</p>
-            <p class="footer-admin-link">
-                <a href="{{ path('admin_login') }}" title="Staff &amp; Management Login">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -1px; margin-right: 4px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    Staff &amp; Management Portal
-                </a>
-            </p>
         </div>
     </div>
 </footer>

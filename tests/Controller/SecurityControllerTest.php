@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Admin;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,16 +11,85 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class SecurityControllerTest extends WebTestCase
 {
-    public function testMainLoginOffersSubtleAdminLoginLink(): void
+    public function testMainLoginUsesOneFormForGuestsAndStaff(): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSame(
-            '/admin/login',
-            $crawler->filter('.auth-admin-link a')->attr('href'),
-        );
+        $this->assertSame('/login?redirect=', $crawler->filter('#loginForm')->attr('action'));
+        $this->assertSame('text', $crawler->filter('#email')->attr('type'));
+        $this->assertCount(0, $crawler->filter('.auth-admin-link'));
+    }
+
+    public function testAdminAndStaffCanSignInThroughMainLogin(): void
+    {
+        $client = static::createClient();
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+
+        foreach ([Admin::ROLE_ADMIN => '/admin', Admin::ROLE_STAFF => '/admin/rooms'] as $role => $destination) {
+            $admin = new Admin();
+            $admin->setName('Login Test')
+                ->setEmail('login_' . uniqid() . '@example.com')
+                ->setRole($role)
+                ->setPassword($hasher->hashPassword($admin, 'TestPassword123!'));
+            $em->persist($admin);
+            $em->flush();
+
+            $crawler = $client->request('GET', '/login');
+            $client->request('POST', '/login', [
+                '_csrf_token' => $crawler->filter('input[name="_csrf_token"]')->attr('value'),
+                'email' => $admin->getEmail(),
+                'password' => 'TestPassword123!',
+            ]);
+
+            $this->assertResponseRedirects($destination);
+            $client->followRedirect();
+            $this->assertResponseIsSuccessful();
+
+            $client->request('GET', '/account');
+            $this->assertResponseRedirects($destination);
+            $client->request('GET', '/booking');
+            $this->assertResponseRedirects($destination);
+
+            $adminId = $admin->getId();
+            $em = static::getContainer()->get(EntityManagerInterface::class);
+            $em->remove($em->find(Admin::class, $adminId));
+            $em->flush();
+            $client->restart();
+        }
+    }
+
+    public function testDisabledStaffCannotSignInThroughMainLogin(): void
+    {
+        $client = static::createClient();
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $hasher = static::getContainer()->get(UserPasswordHasherInterface::class);
+
+        $admin = new Admin();
+        $admin->setName('Disabled Login Test')
+            ->setEmail('disabled_login_' . uniqid() . '@example.com')
+            ->setRole(Admin::ROLE_STAFF)
+            ->setStatus(Admin::STATUS_DISABLED)
+            ->setPassword($hasher->hashPassword($admin, 'TestPassword123!'));
+        $em->persist($admin);
+        $em->flush();
+
+        $crawler = $client->request('GET', '/login');
+        $client->request('POST', '/login', [
+            '_csrf_token' => $crawler->filter('input[name="_csrf_token"]')->attr('value'),
+            'email' => $admin->getEmail(),
+            'password' => 'TestPassword123!',
+        ]);
+
+        $this->assertResponseRedirects('/login');
+        $client->followRedirect();
+        $this->assertAnySelectorTextContains('.auth-error-text', 'disabled');
+
+        $em = static::getContainer()->get(EntityManagerInterface::class);
+        $em->remove($em->find(Admin::class, $admin->getId()));
+        $em->flush();
     }
 
     public function testRegistrationFlow(): void

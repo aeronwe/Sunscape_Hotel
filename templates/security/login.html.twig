@@ -60,16 +60,16 @@
                 <form class="auth-form" method="POST" action="{{ path('app_login', {redirect: redirect}) }}" id="loginForm">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                     <h2>Welcome Back</h2>
-                    <p class="auth-form-sub">Sign in to manage your stay</p>
+                    <p class="auth-form-sub">Sign in to your account</p>
 
                     <div class="auth-input-group">
-                        <label for="email">Email Address</label>
+                        <label for="email">Email or Username</label>
                         <div class="auth-input-wrap">
                             <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="2" y="4" width="20" height="16" rx="2" />
                                 <path d="M2 6l10 7 10-7" />
                             </svg>
-                            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" value="{{ last_username }}" required>
+                            <input type="text" id="email" name="email" placeholder="Enter your email or username" autocomplete="username" value="{{ last_username }}" required>
                         </div>
                     </div>
 
@@ -100,13 +100,11 @@
                         <a href="#" class="auth-link-muted">Forgot password?</a>
                     </div>
 
-                    <input type="hidden" name="_target_path" value="{{ redirect == 'booking' ? path('booking_index') : path('account_index') }}">
                     {# Keep ?redirect=… on a failed attempt so the next successful login still lands on the right page #}
                     <input type="hidden" name="_failure_path" value="{{ redirect ? path('app_login', {redirect: redirect}) : path('app_login') }}">
 
                     <button type="submit" class="auth-btn-primary" id="loginBtn">Sign In</button>
                     <p class="auth-switch-text">Don't have an account? <a href="{{ path('app_register', {redirect: redirect}) }}">Sign Up</a></p>
-                    <p class="auth-admin-link">Staff &amp; management? <a href="{{ path('admin_login') }}">Admin login</a></p>
                 </form>
             </section>
         </div>

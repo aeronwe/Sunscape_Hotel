@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Admin;
 use App\Entity\User;
+use App\Repository\AdminRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +22,11 @@ final class SecurityController extends AbstractController
     {
         $redirect = $request->query->getString('redirect', '');
 
-        if ($this->getUser()) {
+        if ($this->getUser() instanceof Admin) {
+            return $this->redirectToRoute($this->isGranted('ROLE_ADMIN') ? 'admin_dashboard' : 'admin_rooms');
+        }
+
+        if ($this->getUser() instanceof User) {
             return $this->redirectToRoute($redirect === 'booking' ? 'booking_index' : 'account_index');
         }
 
@@ -37,9 +43,14 @@ final class SecurityController extends AbstractController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher,
         UserRepository $userRepo,
+        AdminRepository $adminRepo,
         ValidatorInterface $validator,
     ): Response {
         if ($this->getUser()) {
+            if ($this->getUser() instanceof Admin) {
+                return $this->redirectToRoute($this->isGranted('ROLE_ADMIN') ? 'admin_dashboard' : 'admin_rooms');
+            }
+
             return $this->redirectToRoute('account_index');
         }
 
@@ -75,7 +86,7 @@ final class SecurityController extends AbstractController
 
             if (empty($errors)) {
                 $existing = $userRepo->findOneBy(['email' => $email]);
-                if ($existing) {
+                if ($existing || $adminRepo->findOneBy(['email' => $email])) {
                     $errors[] = 'An account with this email already exists.';
                 }
             }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Admin;
 use App\Entity\User;
 use App\Repository\ReservationRepository;
 use App\Repository\UserRepository;
@@ -32,8 +33,15 @@ final class AccountController extends AbstractController
         UserPasswordHasherInterface $hasher,
         ValidatorInterface $validator,
     ): Response {
-        /** @var User $user */
         $user = $this->getUser();
+        if ($user instanceof Admin) {
+            return $this->redirectToRoute($this->isGranted('ROLE_ADMIN') ? 'admin_dashboard' : 'admin_rooms');
+        }
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
         $errors = [];
         $successMsg = '';
 

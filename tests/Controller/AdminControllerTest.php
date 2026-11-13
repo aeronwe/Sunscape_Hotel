@@ -40,7 +40,7 @@ class AdminControllerTest extends WebTestCase
         $adminRepo = static::getContainer()->get(AdminRepository::class);
         $admin = $adminRepo->findOneBy(['role' => Admin::ROLE_ADMIN]) ?? $this->createTestAdmin();
 
-        $client->loginUser($admin, 'admin');
+        $client->loginUser($admin, 'main');
 
         // 1. Dashboard
         $client->request('GET', '/admin');
@@ -95,7 +95,7 @@ class AdminControllerTest extends WebTestCase
         $em->persist($adminRoom);
         $em->flush();
 
-        $client->loginUser($staff, 'admin');
+        $client->loginUser($staff, 'main');
 
         // Staff must be blocked (403) from Admin Dashboard (/admin) and Staff Management (/admin/staff)
         $client->request('GET', '/admin');
@@ -229,7 +229,7 @@ class AdminControllerTest extends WebTestCase
         $resRepo = static::getContainer()->get(ReservationRepository::class);
 
         $admin = $adminRepo->findOneBy(['role' => Admin::ROLE_ADMIN]) ?? $this->createTestAdmin();
-        $client->loginUser($admin, 'admin');
+        $client->loginUser($admin, 'main');
 
         $reservation = $resRepo->findOneBy([]);
         if (!$reservation) {
@@ -278,7 +278,7 @@ class AdminControllerTest extends WebTestCase
         $roomRepo = static::getContainer()->get(RoomRepository::class);
 
         $admin = $adminRepo->findOneBy(['role' => Admin::ROLE_ADMIN]) ?? $this->createTestAdmin();
-        $client->loginUser($admin, 'admin');
+        $client->loginUser($admin, 'main');
 
         $crawler = $client->request('GET', '/admin/rooms');
         $csrfToken = $crawler->filter('input[name="_token"]')->first()->attr('value');
@@ -340,7 +340,7 @@ class AdminControllerTest extends WebTestCase
         $serviceRepo = static::getContainer()->get(ServiceRepository::class);
 
         $admin = $adminRepo->findOneBy(['role' => Admin::ROLE_ADMIN]) ?? $this->createTestAdmin();
-        $client->loginUser($admin, 'admin');
+        $client->loginUser($admin, 'main');
 
         $crawler = $client->request('GET', '/admin/services');
         $csrfToken = $crawler->filter('input[name="_token"]')->first()->attr('value');

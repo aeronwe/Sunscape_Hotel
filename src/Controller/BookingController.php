@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Admin;
 use App\Entity\Reservation;
 use App\Entity\ReservationService;
 use App\Entity\User;
@@ -19,7 +20,11 @@ final class BookingController extends AbstractController
     #[Route('/booking', name: 'booking_index', methods: ['GET', 'POST'])]
     public function index(Request $request, RoomRepository $roomRepo, ServiceRepository $serviceRepo): Response
     {
-        if (!$this->getUser()) {
+        if ($this->getUser() instanceof Admin) {
+            return $this->redirectToRoute($this->isGranted('ROLE_ADMIN') ? 'admin_dashboard' : 'admin_rooms');
+        }
+
+        if (!$this->getUser() instanceof User) {
             $this->addFlash('error', 'Please log in or create an account before making a booking.');
             return $this->redirectToRoute('app_login', ['redirect' => 'booking']);
         }
